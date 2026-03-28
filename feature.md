@@ -149,6 +149,33 @@ Base URL: `/api/v1/contacts`
 }
 ```
 
+### Portfolio Categories API
+Base URL: `/api/v1/portfolio/categories`
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/portfolio/categories` | Get all categories |
+| POST | `/api/v1/portfolio/categories` | Create new category |
+| PUT | `/api/v1/portfolio/categories` | Update category |
+| DELETE | `/api/v1/portfolio/categories?id=` | Delete category |
+
+#### Create Category (POST /api/v1/portfolio/categories)
+```json
+{
+  "name": "Web Design",
+  "icon": "bi-globe"
+}
+```
+
+#### Update Category (PUT /api/v1/portfolio/categories)
+```json
+{
+  "id": "web-design",
+  "name": "Web Design Updated",
+  "icon": "bi-display"
+}
+```
+
 ### Migration Commands
 ```bash
 php8.5 artisan migrate
