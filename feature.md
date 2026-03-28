@@ -357,6 +357,7 @@ php8.5 artisan db:seed
 ### Seed Data
 The seeder includes:
 - **Categories**: 5 default portfolio categories (Web Design, Mobile Design, Branding, UI/UX, Desktop App)
+- **Projects**: 16 sample projects across all categories (BookNStay, eSchool ERP, JPay, etc.)
 - **Services**: 6 services with descriptions and icons
 - **Settings**: Company info, contact details, social links
 - **Stats**: 24 stats across sections (hero, about, services, why_us, contact, portfolio_details, service_details)
