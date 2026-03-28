@@ -1,0 +1,130 @@
+<?php
+
+namespace App\Livewire\Admin\Team;
+
+use App\Livewire\Admin\AdminComponent;
+use Livewire\Attributes\Layout;
+use App\Models\TeamMember;
+
+#[Layout('layouts.admin')]
+class TeamIndex extends AdminComponent
+{
+    public $members = [];
+    public $loading = true;
+    public $showModal = false;
+    public $editingMember = null;
+    public $name = '';
+    public $role = '';
+    public $bio = '';
+    public $image = '';
+    public $facebook_url = '#';
+    public $twitter_url = '#';
+    public $linkedin_url = '#';
+    public $instagram_url = '#';
+    public $displayOrder = 0;
+    public $status = 'active';
+    public $showDeleteModal = false;
+    public $deleteId = null;
+
+    public function mount()
+    {
+        $this->loadData();
+    }
+
+    public function loadData()
+    {
+        $this->members = TeamMember::orderBy('display_order')->get()->toArray();
+        $this->loading = false;
+    }
+
+    public function openModal($member = null)
+    {
+        if ($member) {
+            $this->editingMember = $member;
+            $this->name = $member['name'];
+            $this->role = $member['role'] ?? '';
+            $this->bio = $member['bio'] ?? '';
+            $this->image = $member['image'] ?? '';
+            $this->facebook_url = $member['facebook_url'] ?? '#';
+            $this->twitter_url = $member['twitter_url'] ?? '#';
+            $this->linkedin_url = $member['linkedin_url'] ?? '#';
+            $this->instagram_url = $member['instagram_url'] ?? '#';
+            $this->displayOrder = $member['display_order'] ?? 0;
+            $this->status = $member['status'] ?? 'active';
+        } else {
+            $this->resetForm();
+            $this->displayOrder = count($this->members) + 1;
+        }
+        $this->showModal = true;
+    }
+
+    public function closeModal()
+    {
+        $this->showModal = false;
+        $this->editingMember = null;
+        $this->resetForm();
+    }
+
+    public function resetForm()
+    {
+        $this->name = '';
+        $this->role = '';
+        $this->bio = '';
+        $this->image = '';
+        $this->facebook_url = '#';
+        $this->twitter_url = '#';
+        $this->linkedin_url = '#';
+        $this->instagram_url = '#';
+        $this->displayOrder = 0;
+        $this->status = 'active';
+    }
+
+    public function save()
+    {
+        $data = [
+            'name' => $this->name,
+            'role' => $this->role,
+            'bio' => $this->bio,
+            'image' => $this->image,
+            'facebook_url' => $this->facebook_url,
+            'twitter_url' => $this->twitter_url,
+            'linkedin_url' => $this->linkedin_url,
+            'instagram_url' => $this->instagram_url,
+            'display_order' => $this->displayOrder,
+            'status' => $this->status,
+        ];
+
+        if ($this->editingMember) {
+            TeamMember::where('id', $this->editingMember['id'])->update($data);
+            $this->dispatch('toast', ['message' => 'Team member updated successfully!', 'type' => 'success']);
+        } else {
+            TeamMember::create($data);
+            $this->dispatch('toast', ['message' => 'Team member created successfully!', 'type' => 'success']);
+        }
+
+        $this->closeModal();
+        $this->loadData();
+    }
+
+    public function confirmDelete($id)
+    {
+        $this->deleteId = $id;
+        $this->showDeleteModal = true;
+    }
+
+    public function delete()
+    {
+        if ($this->deleteId) {
+            TeamMember::where('id', $this->deleteId)->delete();
+            $this->dispatch('toast', ['message' => 'Team member deleted successfully!', 'type' => 'success']);
+        }
+        $this->showDeleteModal = false;
+        $this->deleteId = null;
+        $this->loadData();
+    }
+
+    public function render()
+    {
+        return view('livewire.admin.team.team-index');
+    }
+}
