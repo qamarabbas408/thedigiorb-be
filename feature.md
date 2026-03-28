@@ -66,18 +66,20 @@ npm run dev
 
 ## API Endpoints
 
+All APIs are versioned under `/api/v1/*`. Future versions will use `/api/v2/*`.
+
 ### Contacts API
-Base URL: `/api/contacts`
+Base URL: `/api/v1/contacts`
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/contacts` | Get all contacts (supports `?status=` filter) |
-| POST | `/api/contacts` | Create new contact |
-| GET | `/api/contacts/{id}` | Get single contact |
-| PUT | `/api/contacts/{id}` | Update contact status |
-| DELETE | `/api/contacts/{id}` | Delete contact |
+| GET | `/api/v1/contacts` | Get all contacts (supports `?status=` filter) |
+| POST | `/api/v1/contacts` | Create new contact |
+| GET | `/api/v1/contacts/{id}` | Get single contact |
+| PUT | `/api/v1/contacts/{id}` | Update contact status |
+| DELETE | `/api/v1/contacts/{id}` | Delete contact |
 
-#### Create Contact (POST /api/contacts)
+#### Create Contact (POST /api/v1/contacts)
 ```json
 {
   "name": "John Doe",
@@ -88,7 +90,7 @@ Base URL: `/api/contacts`
 }
 ```
 
-#### Update Contact Status (PUT /api/contacts/{id})
+#### Update Contact Status (PUT /api/v1/contacts/{id})
 ```json
 {
   "status": "read"
