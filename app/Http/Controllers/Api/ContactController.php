@@ -18,7 +18,7 @@ class ContactController extends Controller
 
         $contacts = $query->orderBy('created_at', 'DESC')->get();
 
-        return response()->json($contacts);
+        return $this->success($contacts);
     }
 
     public function store(Request $request)
@@ -33,11 +33,10 @@ class ContactController extends Controller
 
         $contact = Contact::create($validated);
 
-        return response()->json([
-            'success' => true,
-            'id' => $contact->id,
-            'message' => 'Thank you for your message. We will get back to you soon!',
-        ], 201);
+        return $this->created(
+            ['id' => $contact->id],
+            'Thank you for your message. We will get back to you soon!'
+        );
     }
 
     public function show(string $id)
@@ -45,10 +44,10 @@ class ContactController extends Controller
         $contact = Contact::find($id);
 
         if (!$contact) {
-            return response()->json(['error' => 'Contact not found'], 404);
+            return $this->notFound('Contact');
         }
 
-        return response()->json($contact);
+        return $this->success($contact);
     }
 
     public function update(Request $request, string $id)
@@ -56,14 +55,14 @@ class ContactController extends Controller
         $contact = Contact::find($id);
 
         if (!$contact) {
-            return response()->json(['error' => 'Contact not found'], 404);
+            return $this->notFound('Contact');
         }
 
         $contact->update([
             'status' => $request->status ?? 'new',
         ]);
 
-        return response()->json(['success' => true]);
+        return $this->updated();
     }
 
     public function destroy(string $id)
@@ -71,11 +70,11 @@ class ContactController extends Controller
         $contact = Contact::find($id);
 
         if (!$contact) {
-            return response()->json(['error' => 'Contact not found'], 404);
+            return $this->notFound('Contact');
         }
 
         $contact->delete();
 
-        return response()->json(['success' => true]);
+        return $this->deleted();
     }
 }

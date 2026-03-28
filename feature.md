@@ -68,6 +68,58 @@ npm run dev
 
 All APIs are versioned under `/api/v1/*`. Future versions will use `/api/v2/*`.
 
+### API Response Format
+
+All API responses follow a consistent format using the `ApiResponse` trait.
+
+#### Success Response
+```json
+{
+  "success": true,
+  "message": "Operation successful",
+  "data": { ... }
+}
+```
+
+#### Error Response
+```json
+{
+  "success": false,
+  "message": "Error description",
+  "errors": { ... }
+}
+```
+
+#### Paginated Response
+```json
+{
+  "success": true,
+  "data": [...],
+  "meta": {
+    "current_page": 1,
+    "last_page": 5,
+    "per_page": 15,
+    "total": 100
+  },
+  "links": {
+    "first": "...",
+    "last": "...",
+    "prev": null,
+    "next": "..."
+  }
+}
+```
+
+#### HTTP Status Codes
+| Code | Usage |
+|------|-------|
+| 200 | Success (GET, PUT, DELETE) |
+| 201 | Created (POST) |
+| 400 | Bad Request |
+| 404 | Not Found |
+| 422 | Validation Error |
+| 500 | Server Error |
+
 ### Contacts API
 Base URL: `/api/v1/contacts`
 
