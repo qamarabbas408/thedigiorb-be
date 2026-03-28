@@ -63,3 +63,39 @@ npm run build
 ```bash
 npm run dev
 ```
+
+## API Endpoints
+
+### Contacts API
+Base URL: `/api/contacts`
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/contacts` | Get all contacts (supports `?status=` filter) |
+| POST | `/api/contacts` | Create new contact |
+| GET | `/api/contacts/{id}` | Get single contact |
+| PUT | `/api/contacts/{id}` | Update contact status |
+| DELETE | `/api/contacts/{id}` | Delete contact |
+
+#### Create Contact (POST /api/contacts)
+```json
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "subject": "Inquiry",
+  "message": "Hello, I have a question...",
+  "phone": "+1234567890"
+}
+```
+
+#### Update Contact Status (PUT /api/contacts/{id})
+```json
+{
+  "status": "read"
+}
+```
+
+### Migration Commands
+```bash
+php8.5 artisan migrate
+```
