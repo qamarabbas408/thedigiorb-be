@@ -26,11 +26,6 @@
 </head>
 <body class="bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30 min-h-screen">
 
-    <!-- Toast Notification -->
-    <div x-show="showToast" x-transition x-cloak class="fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg" :class="toastType === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'">
-        <span x-text="toastMessage"></span>
-    </div>
-
     <!-- Sidebar -->
     <aside class="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-800 text-white flex flex-col fixed h-screen z-40 transition-all duration-300 shadow-2xl w-72">
         <!-- Header -->
@@ -111,5 +106,48 @@
     </main>
     
     @livewireScripts
+    
+    <script>
+        document.addEventListener('livewire:init', () => {
+            // Toast notification system
+            Livewire.on('toast', (event) => {
+                const { message, type } = event[0] || event;
+                
+                // Create toast element if it doesn't exist
+                let toast = document.getElementById('livewire-toast');
+                if (!toast) {
+                    toast = document.createElement('div');
+                    toast.id = 'livewire-toast';
+                    toast.className = 'fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full';
+                    document.body.appendChild(toast);
+                }
+                
+                // Set content and styling
+                toast.textContent = message;
+                toast.className = `fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg transform transition-all duration-300 ${
+                    type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+                }`;
+                
+                // Show toast
+                setTimeout(() => {
+                    toast.classList.remove('translate-x-full');
+                    toast.classList.add('translate-x-0');
+                }, 100);
+                
+                // Hide toast after 3 seconds
+                setTimeout(() => {
+                    toast.classList.remove('translate-x-0');
+                    toast.classList.add('translate-x-full');
+                    
+                    // Remove from DOM after animation
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.parentNode.removeChild(toast);
+                        }
+                    }, 300);
+                }, 3000);
+            });
+        });
+    </script>
 </body>
 </html>
