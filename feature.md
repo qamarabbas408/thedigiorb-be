@@ -351,4 +351,14 @@ Base URL: `/api/v1/upload`
 ### Migration Commands
 ```bash
 php8.5 artisan migrate
+php8.5 artisan db:seed
 ```
+
+### Seed Data
+The seeder includes:
+- **Categories**: 5 default portfolio categories (Web Design, Mobile Design, Branding, UI/UX, Desktop App)
+- **Services**: 6 services with descriptions and icons
+- **Settings**: Company info, contact details, social links
+- **Stats**: 24 stats across sections (hero, about, services, why_us, contact, portfolio_details, service_details)
+- **Team Members**: 4 team members (Qamar Abbas, Sunail Abbas, Zafar Mirza, Tashmina Mehr)
+- **Testimonials**: 3 sample testimonials
