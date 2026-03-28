@@ -75,8 +75,98 @@
                             <textarea wire:model="bio" rows="3" placeholder="Brief description..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"></textarea>
                         </div>
                         <div class="mt-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-                            <input type="url" wire:model="image" placeholder="https://..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Profile Image *</label>
+                            
+                            <!-- Tab Navigation -->
+                            <div class="flex space-x-1 mb-3">
+                                <button 
+                                    type="button" 
+                                    wire:click="$set('imageTab', 'upload')"
+                                    class="flex-1 py-2 px-3 text-sm font-medium rounded-l-lg {{ $imageTab === 'upload' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}"
+                                >
+                                    Upload Image
+                                </button>
+                                <button 
+                                    type="button" 
+                                    wire:click="$set('imageTab', 'url')"
+                                    class="flex-1 py-2 px-3 text-sm font-medium rounded-r-lg {{ $imageTab === 'url' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}"
+                                >
+                                    Image URL
+                                </button>
+                            </div>
+                            
+                            <!-- Upload Tab -->
+                            @if($imageTab === 'upload')
+                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                                    <div class="text-center">
+                                        <i class="bi bi-person text-3xl text-gray-400 mb-2"></i>
+                                        <label for="team-image-upload" class="cursor-pointer">
+                                            <span class="text-sm font-medium text-gray-900">
+                                                Click to upload profile image
+                                            </span>
+                                            <span class="text-xs text-gray-500 block">
+                                                PNG, JPG, GIF, WebP up to 10MB
+                                            </span>
+                                        </label>
+                                        <input
+                                            type="file"
+                                            id="team-image-upload"
+                                            wire:model="mainImageFile"
+                                            accept="image/*"
+                                            class="sr-only"
+                                        />
+                                    </div>
+                                </div>
+                                
+                                <!-- Preview uploaded image -->
+                                @if($mainImageFile)
+                                    <div class="mt-4">
+                                        <img src="{{ $mainImageFile->temporaryUrl() }}" alt="Preview" class="w-24 h-24 object-cover rounded-lg border border-blue-200">
+                                        <p class="text-xs text-blue-600 mt-1">New profile image preview</p>
+                                    </div>
+                                @endif
+                                
+                                @error('mainImageFile')
+                                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                                @enderror
+                            @endif
+                            
+                            <!-- URL Tab -->
+                            @if($imageTab === 'url')
+                                <div>
+                                    <input
+                                        type="url"
+                                        wire:model="imageUrl"
+                                        placeholder="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    />
+                                    <p class="text-xs text-gray-500 mt-1">Enter profile image URL from Unsplash, LinkedIn, or any other source</p>
+                                    
+                                    <!-- Preview URL image -->
+                                    @if($imageUrl)
+                                        <div class="mt-4">
+                                            <img src="{{ $imageUrl }}" alt="Preview" class="w-24 h-24 object-cover rounded-lg border border-blue-200" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop'">
+                                            <p class="text-xs text-blue-600 mt-1">URL image preview</p>
+                                        </div>
+                                    @endif
+                                    
+                                    @error('imageUrl')
+                                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            @endif
+                            
+                            <!-- Show current image if editing -->
+                            @if($editingMember && $editingMember['image'])
+                                <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+                                    <p class="text-xs font-medium text-gray-700 mb-2">Current Image:</p>
+                                    <img src="{{ $editingMember['image'] }}" alt="Current" class="w-20 h-20 object-cover rounded border border-gray-300" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop'">
+                                </div>
+                            @endif
+                            
+                            @error('imageRequired')
+                                <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div class="mt-6 flex justify-end gap-3 pt-4 border-t border-gray-200">
                             <button type="button" wire:click="closeModal()" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">Cancel</button>

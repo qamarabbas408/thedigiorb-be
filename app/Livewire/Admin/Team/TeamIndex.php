@@ -5,10 +5,13 @@ namespace App\Livewire\Admin\Team;
 use App\Livewire\Admin\AdminComponent;
 use Livewire\Attributes\Layout;
 use App\Models\TeamMember;
+use Livewire\WithFileUploads;
 
 #[Layout('layouts.admin')]
 class TeamIndex extends AdminComponent
 {
+    use WithFileUploads;
+    
     public $members = [];
     public $loading = true;
     public $showModal = false;
@@ -17,6 +20,9 @@ class TeamIndex extends AdminComponent
     public $role = '';
     public $bio = '';
     public $image = '';
+    public $imageUrl = '';
+    public $imageTab = 'upload'; // 'upload' or 'url'
+    public $mainImageFile = null;
     public $facebook_url = '#';
     public $twitter_url = '#';
     public $linkedin_url = '#';
@@ -45,6 +51,8 @@ class TeamIndex extends AdminComponent
             $this->role = $member['role'] ?? '';
             $this->bio = $member['bio'] ?? '';
             $this->image = $member['image'] ?? '';
+            $this->imageUrl = '';
+            $this->imageTab = 'upload'; // Default to upload tab
             $this->facebook_url = $member['facebook_url'] ?? '#';
             $this->twitter_url = $member['twitter_url'] ?? '#';
             $this->linkedin_url = $member['linkedin_url'] ?? '#';
@@ -52,7 +60,7 @@ class TeamIndex extends AdminComponent
             $this->displayOrder = $member['display_order'] ?? 0;
             $this->status = $member['status'] ?? 'active';
         } else {
-            $this->resetForm();
+            $this->resetModal();
             $this->displayOrder = count($this->members) + 1;
         }
         $this->showModal = true;
@@ -71,6 +79,9 @@ class TeamIndex extends AdminComponent
         $this->role = '';
         $this->bio = '';
         $this->image = '';
+        $this->imageUrl = '';
+        $this->imageTab = 'upload';
+        $this->mainImageFile = null;
         $this->facebook_url = '#';
         $this->twitter_url = '#';
         $this->linkedin_url = '#';
@@ -81,6 +92,36 @@ class TeamIndex extends AdminComponent
 
     public function save()
     {
+        $this->validate([
+            'name' => 'required|string|max:255',
+            'role' => 'required|string|max:255',
+            'bio' => 'nullable|string',
+            'imageUrl' => 'nullable|url',
+            'mainImageFile' => 'nullable|image|max:10240',
+        ]);
+
+        // Validate that either main image file or image URL is provided
+        if (!$this->mainImageFile && !$this->imageUrl && !$this->image) {
+            $this->addError('imageRequired', 'A profile image is required. Please either upload an image or provide an image URL.');
+            return;
+        }
+
+        // Process main image
+        if ($this->mainImageFile) {
+            try {
+                $uploadService = app(\App\Services\FileUploadService::class);
+                $uploadedImage = $uploadService->uploadImage($this->mainImageFile, 'team/members');
+                $this->image = $uploadedImage['url'];
+                $this->dispatch('toast', ['message' => 'Profile image uploaded successfully!', 'type' => 'success']);
+            } catch (\Exception $e) {
+                $this->addError('mainImageFile', 'Failed to upload profile image: ' . $e->getMessage());
+                $this->dispatch('toast', ['message' => 'Failed to upload profile image', 'type' => 'error']);
+            }
+        } elseif ($this->imageUrl) {
+            // Use the provided URL
+            $this->image = $this->imageUrl;
+        }
+
         $data = [
             'name' => $this->name,
             'role' => $this->role,

@@ -216,48 +216,97 @@
                         </div>
 
                         <div class="mt-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Main Image</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Main Image *</label>
                         
-                        <!-- Current Main Image Preview -->
-                        @if($image)
-                            <div class="mb-4">
-                                <img src="{{ $image }}" alt="Current main image" class="w-32 h-32 object-cover rounded-lg border border-gray-200">
-                                <p class="text-xs text-gray-500 mt-1">Current main image</p>
-                            </div>
-                        @endif
-                        
-                        <!-- Main Image Upload -->
-                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4">
-                            <div class="text-center">
-                                <i class="bi bi-image text-3xl text-gray-400 mb-2"></i>
-                                <label for="main-image-upload" class="cursor-pointer">
-                                    <span class="text-sm font-medium text-gray-900">
-                                        Click to upload main image
-                                    </span>
-                                    <span class="text-xs text-gray-500 block">
-                                        PNG, JPG, GIF, WebP up to 10MB
-                                    </span>
-                                </label>
-                                <input
-                                    type="file"
-                                    id="main-image-upload"
-                                    wire:model="mainImageFile"
-                                    accept="image/*"
-                                    class="sr-only"
-                                />
-                            </div>
+                        <!-- Tab Navigation -->
+                        <div class="flex space-x-1 mb-3">
+                            <button 
+                                type="button" 
+                                wire:click="$set('imageTab', 'upload')"
+                                class="flex-1 py-2 px-3 text-sm font-medium rounded-l-lg {{ $imageTab === 'upload' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}"
+                            >
+                                Upload Image
+                            </button>
+                            <button 
+                                type="button" 
+                                wire:click="$set('imageTab', 'url')"
+                                class="flex-1 py-2 px-3 text-sm font-medium rounded-r-lg {{ $imageTab === 'url' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}"
+                            >
+                                Image URL
+                            </button>
                         </div>
                         
-                        <!-- Preview uploaded main image -->
-                        @if($mainImageFile)
-                            <div class="mt-4">
-                                <img src="{{ $mainImageFile->temporaryUrl() }}" alt="Preview" class="w-32 h-32 object-cover rounded-lg border border-blue-200">
-                                <p class="text-xs text-blue-600 mt-1">New main image preview</p>
+                        <!-- Upload Tab -->
+                        @if($imageTab === 'upload')
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                                <div class="text-center">
+                                    <i class="bi bi-image text-3xl text-gray-400 mb-2"></i>
+                                    <label for="main-image-upload" class="cursor-pointer">
+                                        <span class="text-sm font-medium text-gray-900">
+                                            Click to upload main image
+                                        </span>
+                                        <span class="text-xs text-gray-500 block">
+                                            PNG, JPG, GIF, WebP up to 10MB
+                                        </span>
+                                    </label>
+                                    <input
+                                        type="file"
+                                        id="main-image-upload"
+                                        wire:model="mainImageFile"
+                                        accept="image/*"
+                                        class="sr-only"
+                                    />
+                                </div>
+                            </div>
+                            
+                            <!-- Preview uploaded main image -->
+                            @if($mainImageFile)
+                                <div class="mt-4">
+                                    <img src="{{ $mainImageFile->temporaryUrl() }}" alt="Preview" class="w-32 h-32 object-cover rounded-lg border border-blue-200">
+                                    <p class="text-xs text-blue-600 mt-1">New main image preview</p>
+                                </div>
+                            @endif
+                            
+                            @error('mainImageFile')
+                                <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                            @enderror
+                        @endif
+                        
+                        <!-- URL Tab -->
+                        @if($imageTab === 'url')
+                            <div>
+                                <input
+                                    type="url"
+                                    wire:model="imageUrl"
+                                    placeholder="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                />
+                                <p class="text-xs text-gray-500 mt-1">Enter image URL from Unsplash, Pexels, or any other source</p>
+                                
+                                <!-- Preview URL image -->
+                                @if($imageUrl)
+                                    <div class="mt-4">
+                                        <img src="{{ $imageUrl }}" alt="Preview" class="w-32 h-32 object-cover rounded-lg border border-blue-200" onerror="this.src='https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&h=200&fit=crop'">
+                                        <p class="text-xs text-blue-600 mt-1">URL image preview</p>
+                                    </div>
+                                @endif
+                                
+                                @error('imageUrl')
+                                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
                         @endif
                         
-                        @error('mainImageFile')
-                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                        <!-- Show current image if editing -->
+                        @if($editingProject && $editingProject['image'])
+                            <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+                                <p class="text-xs font-medium text-gray-700 mb-2">Current Image:</p>
+                                <img src="{{ $editingProject['image'] }}" alt="Current" class="w-24 h-24 object-cover rounded border border-gray-300" onerror="this.src='https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&h=200&fit=crop'">
+                            </div>
+                        @endif
+                        
+                        @error('imageRequired')
+                            <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
                         @enderror
                     </div>
 

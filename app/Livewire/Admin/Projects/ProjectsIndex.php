@@ -19,6 +19,12 @@ class ProjectsIndex extends AdminComponent
     public $categories = [];
     public $loading = true;
     
+    public $mainImageFile = null;
+    public $imageUrl = '';
+    public $imageTab = 'upload'; // 'upload' or 'url'
+    public $galleryFiles = [];
+    public $gallery = [];
+    public $uploadedGallery = [];
     public $showModal = false;
     public $editingProject = null;
     
@@ -29,7 +35,6 @@ class ProjectsIndex extends AdminComponent
     public $technologies = '';
     public $description = '';
     public $image = '';
-    public $gallery = [];
     public $client = '';
     public $url = '';
     public $featured = false;
@@ -37,12 +42,6 @@ class ProjectsIndex extends AdminComponent
     
     public $deleteId = null;
     public $showDeleteModal = false;
-    
-    // File upload properties
-    public $mainImageFile;
-    public $galleryFiles = [];
-    public $uploadedMainImage = null;
-    public $uploadedGallery = [];
 
     public function mount()
     {
@@ -108,15 +107,19 @@ class ProjectsIndex extends AdminComponent
             $this->technologies = is_array($project['technologies']) ? implode(', ', $project['technologies']) : '';
             $this->description = $project['description'] ?? '';
             $this->image = $project['image'] ?? '';
-            $this->gallery = is_array($project['gallery']) ? $project['gallery'] : [];
+            $this->imageUrl = '';
+            $this->imageTab = 'upload'; // Default to upload tab
+            $this->gallery = $project['gallery'] ?? [];
             $this->client = $project['client'] ?? '';
             $this->url = $project['url'] ?? '';
             $this->featured = $project['featured'] ?? false;
             $this->status = $project['status'] ?? 'published';
         } else {
-            $this->resetForm();
-            $this->categoryId = $this->categories[0]['id'] ?? '';
-            $this->year = date('Y');
+            $this->resetModal();
+            if (!empty($this->categories)) {
+                $this->categoryId = $this->categories[0]['id'] ?? '';
+                $this->year = date('Y');
+            }
         }
         $this->showModal = true;
     }
@@ -125,18 +128,20 @@ class ProjectsIndex extends AdminComponent
     {
         $this->showModal = false;
         $this->editingProject = null;
-        $this->resetForm();
+        $this->resetModal();
     }
 
-    public function resetForm()
+    public function resetModal()
     {
         $this->title = '';
         $this->subtitle = '';
         $this->categoryId = '';
-        $this->year = date('Y');
+        $this->year = '';
         $this->technologies = '';
         $this->description = '';
         $this->image = '';
+        $this->imageUrl = '';
+        $this->imageTab = 'upload';
         $this->gallery = [];
         $this->client = '';
         $this->url = '';
@@ -146,7 +151,6 @@ class ProjectsIndex extends AdminComponent
         // Reset file uploads
         $this->mainImageFile = null;
         $this->galleryFiles = [];
-        $this->uploadedMainImage = null;
         $this->uploadedGallery = [];
     }
 
@@ -173,9 +177,16 @@ class ProjectsIndex extends AdminComponent
             'categoryId' => 'required|string',
             'technologies' => 'string',
             'description' => 'string',
+            'imageUrl' => 'nullable|url',
             'mainImageFile' => 'nullable|image|max:10240',
             'galleryFiles.*' => 'nullable|image|max:10240',
         ]);
+
+        // Validate that either main image file or image URL is provided
+        if (!$this->mainImageFile && !$this->imageUrl && !$this->image) {
+            $this->addError('imageRequired', 'A main image is required. Please either upload an image or provide an image URL.');
+            return;
+        }
 
         // Process main image
         if ($this->mainImageFile) {
@@ -188,6 +199,9 @@ class ProjectsIndex extends AdminComponent
                 $this->addError('mainImageFile', 'Failed to upload main image: ' . $e->getMessage());
                 $this->dispatch('toast', ['message' => 'Failed to upload main image', 'type' => 'error']);
             }
+        } elseif ($this->imageUrl) {
+            // Use the provided URL
+            $this->image = $this->imageUrl;
         }
 
         // Process gallery images
