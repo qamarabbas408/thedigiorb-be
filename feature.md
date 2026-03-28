@@ -262,6 +262,92 @@ Returns key-value pairs of all settings.
 }
 ```
 
+### Stats API
+Base URL: `/api/v1/stats`
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/stats` | Get all stats (filters: `?section=`, `?status=`) |
+| POST | `/api/v1/stats` | Create new stat |
+| GET | `/api/v1/stats/{id}` | Get single stat |
+| PUT | `/api/v1/stats/{id}` | Update stat |
+| DELETE | `/api/v1/stats/{id}` | Delete stat |
+
+#### Create Stat (POST /api/v1/stats)
+```json
+{
+  "section": "home",
+  "label": "Projects Completed",
+  "value": "150+",
+  "icon": "bi-briefcase",
+  "displayOrder": 1,
+  "status": "published"
+}
+```
+
+### Team API
+Base URL: `/api/v1/team`
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/team` | Get all active team members |
+| POST | `/api/v1/team` | Create new team member |
+| GET | `/api/v1/team/{id}` | Get single team member |
+| PUT | `/api/v1/team/{id}` | Update team member |
+| DELETE | `/api/v1/team/{id}` | Delete team member |
+
+#### Create Team Member (POST /api/v1/team)
+```json
+{
+  "name": "John Doe",
+  "role": "Lead Developer",
+  "bio": "Experienced developer...",
+  "image": "/assets/img/team/member.webp",
+  "facebook_url": "https://facebook.com/",
+  "twitter_url": "https://twitter.com/",
+  "linkedin_url": "https://linkedin.com/",
+  "instagram_url": "https://instagram.com/",
+  "display_order": 1,
+  "status": "active"
+}
+```
+
+### Testimonials API
+Base URL: `/api/v1/testimonials`
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/testimonials` | Get all (filters: `?featured=true`, `?status=`) |
+| POST | `/api/v1/testimonials` | Create new testimonial |
+| GET | `/api/v1/testimonials/{id}` | Get single testimonial |
+| PUT | `/api/v1/testimonials/{id}` | Update testimonial |
+| DELETE | `/api/v1/testimonials/{id}` | Delete testimonial |
+
+#### Create Testimonial (POST /api/v1/testimonials)
+```json
+{
+  "name": "Jane Smith",
+  "title": "CEO",
+  "company": "Tech Corp",
+  "content": "Great service! Highly recommended.",
+  "rating": 5,
+  "image": "/assets/img/testimonial.webp",
+  "featured": true,
+  "status": "published"
+}
+```
+
+### Upload API
+Base URL: `/api/v1/upload`
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/upload` | Upload file |
+
+#### Upload File (POST /api/v1/upload)
+- Content-Type: `multipart/form-data`
+- Body: `file` (required), `folder` (optional, default: "misc")
+
 ### Migration Commands
 ```bash
 php8.5 artisan migrate

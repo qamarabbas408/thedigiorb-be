@@ -1,0 +1,122 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\Stat;
+use Illuminate\Http\Request;
+
+class StatController extends Controller
+{
+    public function index(Request $request)
+    {
+        $query = Stat::query();
+
+        if ($request->has('section')) {
+            $query->where('section', $request->section);
+        }
+
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $stats = $query->orderBy('section')->orderBy('display_order')->orderBy('created_at', 'DESC')->get();
+
+        $stats = $stats->map(function ($stat) {
+            return $this->formatStat($stat);
+        });
+
+        return $this->success($stats);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'section' => 'required|string|max:50',
+            'label' => 'required|string|max:100',
+            'value' => 'required|string|max:50',
+            'icon' => 'nullable|string|max:100',
+            'displayOrder' => 'nullable|integer',
+            'status' => 'nullable|string|max:20',
+        ]);
+
+        $stat = Stat::create([
+            'id' => (string) time(),
+            'section' => $validated['section'],
+            'label' => $validated['label'],
+            'value' => $validated['value'],
+            'icon' => $validated['icon'] ?? '',
+            'display_order' => $validated['displayOrder'] ?? 0,
+            'status' => $validated['status'] ?? 'published',
+        ]);
+
+        return $this->created($this->formatStat($stat));
+    }
+
+    public function show(string $id)
+    {
+        $stat = Stat::find($id);
+
+        if (!$stat) {
+            return $this->notFound('Stat');
+        }
+
+        return $this->success($this->formatStat($stat));
+    }
+
+    public function update(Request $request, string $id)
+    {
+        $stat = Stat::find($id);
+
+        if (!$stat) {
+            return $this->notFound('Stat');
+        }
+
+        $validated = $request->validate([
+            'section' => 'required|string|max:50',
+            'label' => 'required|string|max:100',
+            'value' => 'required|string|max:50',
+            'icon' => 'nullable|string|max:100',
+            'displayOrder' => 'nullable|integer',
+            'status' => 'nullable|string|max:20',
+        ]);
+
+        $stat->update([
+            'section' => $validated['section'],
+            'label' => $validated['label'],
+            'value' => $validated['value'],
+            'icon' => $validated['icon'] ?? '',
+            'display_order' => $validated['displayOrder'] ?? 0,
+            'status' => $validated['status'] ?? 'published',
+        ]);
+
+        return $this->success($this->formatStat($stat->fresh()));
+    }
+
+    public function destroy(string $id)
+    {
+        $stat = Stat::find($id);
+
+        if (!$stat) {
+            return $this->notFound('Stat');
+        }
+
+        $stat->delete();
+
+        return $this->deleted();
+    }
+
+    private function formatStat($stat)
+    {
+        return [
+            'id' => $stat->id,
+            'section' => $stat->section,
+            'label' => $stat->label,
+            'value' => $stat->value,
+            'icon' => $stat->icon,
+            'displayOrder' => $stat->display_order,
+            'status' => $stat->status,
+            'createdAt' => $stat->created_at,
+        ];
+    }
+}
