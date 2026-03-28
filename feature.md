@@ -176,6 +176,49 @@ Base URL: `/api/v1/portfolio/categories`
 }
 ```
 
+### Portfolio Projects API
+Base URL: `/api/v1/portfolio/projects`
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/portfolio/projects` | Get all projects (filters: `?categoryId=`, `?status=`) |
+| POST | `/api/v1/portfolio/projects` | Create new project |
+| GET | `/api/v1/portfolio/projects/{id}` | Get single project |
+| PUT | `/api/v1/portfolio/projects/{id}` | Update project |
+| DELETE | `/api/v1/portfolio/projects/{id}` | Delete project |
+
+#### Create Project (POST /api/v1/portfolio/projects)
+```json
+{
+  "title": "Project Title",
+  "subtitle": "Project Subtitle",
+  "categoryId": "web-design",
+  "year": "2024",
+  "technologies": ["Laravel", "React", "MySQL"],
+  "description": "Project description...",
+  "image": "/assets/img/portfolio/project.webp",
+  "gallery": ["/assets/img/portfolio/gallery-1.webp"],
+  "featured": true,
+  "client": "Client Name",
+  "url": "https://example.com",
+  "status": "published"
+}
+```
+
+#### Update Project (PUT /api/v1/portfolio/projects/{id})
+```json
+{
+  "title": "Updated Title",
+  "subtitle": "Updated Subtitle",
+  "categoryId": "web-design",
+  "year": "2024",
+  "technologies": ["Laravel", "React"],
+  "description": "Updated description...",
+  "featured": false,
+  "status": "draft"
+}
+```
+
 ### Migration Commands
 ```bash
 php8.5 artisan migrate

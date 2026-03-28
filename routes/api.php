@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ContactController;
+use App\Http\Controllers\Api\ProjectController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -15,4 +16,10 @@ Route::prefix('v1')->group(function () {
     Route::post('/portfolio/categories', [CategoryController::class, 'store']);
     Route::put('/portfolio/categories', [CategoryController::class, 'update']);
     Route::delete('/portfolio/categories', [CategoryController::class, 'destroy']);
+
+    Route::get('/portfolio/projects', [ProjectController::class, 'index']);
+    Route::post('/portfolio/projects', [ProjectController::class, 'store']);
+    Route::get('/portfolio/projects/{id}', [ProjectController::class, 'show']);
+    Route::put('/portfolio/projects/{id}', [ProjectController::class, 'update']);
+    Route::delete('/portfolio/projects/{id}', [ProjectController::class, 'destroy']);
 });
