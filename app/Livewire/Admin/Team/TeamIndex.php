@@ -112,14 +112,19 @@ class TeamIndex extends AdminComponent
         $this->showDeleteModal = true;
     }
 
+    public function cancelDelete()
+    {
+        $this->showDeleteModal = false;
+        $this->deleteId = null;
+    }
+
     public function delete()
     {
         if ($this->deleteId) {
             TeamMember::where('id', $this->deleteId)->delete();
             $this->dispatch('toast', ['message' => 'Team member deleted successfully!', 'type' => 'success']);
         }
-        $this->showDeleteModal = false;
-        $this->deleteId = null;
+        $this->cancelDelete();
         $this->loadData();
     }
 

@@ -48,6 +48,7 @@
                                         src="{{ $project['image'] ?: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&h=200&fit=crop' }}"
                                         alt="{{ $project['title'] }}"
                                         class="w-12 h-12 object-cover rounded-lg"
+                                        onerror="this.src='https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&h=200&fit=crop'"
                                     />
                                 </td>
                                 <td class="px-6 py-4">
@@ -72,7 +73,7 @@
                                     <div class="flex -space-x-2">
                                         @if(is_array($project['gallery']) && count($project['gallery']) > 0)
                                             @foreach(array_slice($project['gallery'], 0, 3) as $img)
-                                                <img src="{{ $img }}" alt="" class="w-8 h-8 rounded-full border-2 border-white object-cover" />
+                                                <img src="{{ $img }}" alt="" class="w-8 h-8 rounded-full border-2 border-white object-cover" onerror="this.src='https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=100&h=100&fit=crop'" />
                                             @endforeach
                                             @if(count($project['gallery']) > 3)
                                                 <span class="w-8 h-8 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center text-xs font-medium text-gray-600">
@@ -215,14 +216,91 @@
                         </div>
 
                         <div class="mt-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Image URL (Unsplash/Pexels)</label>
-                            <input
-                                type="url"
-                                wire:model="image"
-                                placeholder="https://images.unsplash.com/..."
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                            />
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Main Image</label>
+                        
+                        <!-- Current Main Image Preview -->
+                        @if($image)
+                            <div class="mb-4">
+                                <img src="{{ $image }}" alt="Current main image" class="w-32 h-32 object-cover rounded-lg border border-gray-200">
+                                <p class="text-xs text-gray-500 mt-1">Current main image</p>
+                            </div>
+                        @endif
+                        
+                        <!-- Main Image Upload -->
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                            <div class="text-center">
+                                <i class="bi bi-image text-3xl text-gray-400 mb-2"></i>
+                                <label for="main-image-upload" class="cursor-pointer">
+                                    <span class="text-sm font-medium text-gray-900">
+                                        Click to upload main image
+                                    </span>
+                                    <span class="text-xs text-gray-500 block">
+                                        PNG, JPG, GIF, WebP up to 10MB
+                                    </span>
+                                </label>
+                                <input
+                                    type="file"
+                                    id="main-image-upload"
+                                    wire:model="mainImageFile"
+                                    accept="image/*"
+                                    class="sr-only"
+                                />
+                            </div>
                         </div>
+                        
+                        <!-- Preview uploaded main image -->
+                        @if($mainImageFile)
+                            <div class="mt-4">
+                                <img src="{{ $mainImageFile->temporaryUrl() }}" alt="Preview" class="w-32 h-32 object-cover rounded-lg border border-blue-200">
+                                <p class="text-xs text-blue-600 mt-1">New main image preview</p>
+                            </div>
+                        @endif
+                        
+                        @error('mainImageFile')
+                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Gallery Images (up to 5 total)</label>
+                        
+                        <!-- Current Gallery Images -->
+                        @if(!empty($gallery))
+                            <div class="mb-4">
+                                <p class="text-sm font-medium text-gray-700 mb-2">Current Gallery Images:</p>
+                                <div class="grid grid-cols-5 gap-2">
+                                    @foreach($gallery as $index => $galleryImage)
+                                        <div class="relative group">
+                                            <img src="{{ $galleryImage }}" alt="Gallery image {{ $index + 1 }}" class="w-full h-20 object-cover rounded border border-gray-200">
+                                            <button
+                                                type="button"
+                                                wire:click="removeGalleryImage({{ $index }})"
+                                                class="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-700"
+                                            >
+                                                <i class="bi bi-x text-xs"></i>
+                                            </button>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">{{ count($gallery) }}/5 images</p>
+                            </div>
+                        @endif
+                        
+                        <!-- Gallery Upload Component -->
+                        <livewire:admin.components.file-upload 
+                            :maxFiles="(5 - count($gallery))"
+                            directory="projects/gallery"
+                            previewImages="true"
+                            showProgress="false"
+                            wire:key="gallery-upload-{{ count($gallery) }}"
+                            wire:file-uploaded="onFileUploaded"
+                            wire:file-removed="onFileRemoved"
+                        />
+                        
+                        @if(count($gallery) >= 5)
+                            <p class="text-sm text-amber-600 mt-2">Maximum gallery images reached (5)</p>
+                        @endif
+                    </div>
 
                         <div class="mt-4">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Project URL</label>
