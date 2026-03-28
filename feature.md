@@ -219,6 +219,49 @@ Base URL: `/api/v1/portfolio/projects`
 }
 ```
 
+### Services API
+Base URL: `/api/v1/services`
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/services` | Get all services (filters: `?status=`, `?featured=true`) |
+| POST | `/api/v1/services` | Create new service |
+| GET | `/api/v1/services/{id}` | Get single service |
+| PUT | `/api/v1/services/{id}` | Update service |
+| DELETE | `/api/v1/services/{id}` | Delete service |
+
+#### Create Service (POST /api/v1/services)
+```json
+{
+  "title": "Web Development",
+  "description": "Professional web development services...",
+  "icon": "bi-code-slash",
+  "featured": true,
+  "displayOrder": 1,
+  "status": "published"
+}
+```
+
+### Settings API
+Base URL: `/api/v1/settings`
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/settings` | Get all settings (key-value pairs) |
+| PUT | `/api/v1/settings` | Update settings |
+
+#### Get Settings (GET /api/v1/settings)
+Returns key-value pairs of all settings.
+
+#### Update Settings (PUT /api/v1/settings)
+```json
+{
+  "site_name": "DigitalOrb",
+  "site_email": "info@example.com",
+  "site_description": "Your trusted partner for digital solutions"
+}
+```
+
 ### Migration Commands
 ```bash
 php8.5 artisan migrate
