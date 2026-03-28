@@ -4,6 +4,7 @@ namespace App\Livewire\Admin\Projects;
 
 use App\Livewire\Admin\AdminComponent;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use App\Models\Project;
 use App\Models\Category;
 use Illuminate\Support\Str;
@@ -306,11 +307,23 @@ class ProjectsIndex extends AdminComponent
     public function onFileUploaded($fileData)
     {
         // Add the uploaded file URL directly to the gallery
+        \Log::info('onFileUploaded received: ' . json_encode($fileData));
         $this->gallery[] = $fileData['url'];
+        \Log::info('Gallery now has ' . count($this->gallery) . ' images');
+    }
+    
+    // Listen for file-uploaded events
+    #[On('file-uploaded')]
+    public function handleFileUploaded($fileData)
+    {
+        \Log::info('handleFileUploaded received: ' . json_encode($fileData));
+        $this->gallery[] = $fileData['url'];
+        \Log::info('Gallery now has ' . count($this->gallery) . ' images');
     }
 
     public function onFileRemoved($index)
     {
+        \Log::info('onFileRemoved received for index: ' . $index);
         if (isset($this->gallery[$index])) {
             // Delete file from storage
             $uploadService = app(\App\Services\FileUploadService::class);

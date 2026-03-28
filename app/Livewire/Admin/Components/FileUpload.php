@@ -48,7 +48,8 @@ class FileUpload extends Component
                     unset($this->files[$key]);
                     
                     // Dispatch event for parent component
-                    $this->dispatch('fileUploaded', $uploadedFile);
+                    \Log::info('Dispatching fileUploaded event: ' . json_encode($uploadedFile));
+                    $this->dispatch('file-uploaded', $uploadedFile);
                     
                 } catch (\Exception $e) {
                     $this->addError('files.' . $key, $e->getMessage());

@@ -293,8 +293,8 @@
                             previewImages="true"
                             showProgress="false"
                             wire:key="gallery-upload-{{ count($gallery) }}"
-                            wire:file-uploaded="onFileUploaded"
-                            wire:file-removed="onFileRemoved"
+                            on-file-uploaded="onFileUploaded"
+                            on-file-removed="onFileRemoved"
                         />
                         
                         @if(count($gallery) >= 5)
