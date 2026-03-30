@@ -6,6 +6,7 @@ use App\Livewire\Admin\Projects\ProjectsIndex;
 use App\Livewire\Admin\Categories\CategoriesIndex;
 use App\Livewire\Admin\Services\ServicesIndex;
 use App\Livewire\Admin\Stats\StatsIndex;
+use App\Livewire\Admin\GlobalStats\GlobalStatsIndex;
 use App\Livewire\Admin\Team\TeamIndex;
 use App\Livewire\Admin\Testimonials\TestimonialsIndex;
 use App\Livewire\Admin\Contacts\ContactsIndex;
@@ -22,6 +23,7 @@ Route::middleware('admin.auth')->group(function () {
     Route::get('/categories', CategoriesIndex::class)->name('admin.categories');
     Route::get('/services', ServicesIndex::class)->name('admin.services');
     Route::get('/stats', StatsIndex::class)->name('admin.stats');
+    Route::get('/global-stats', GlobalStatsIndex::class)->name('admin.global-stats');
     Route::get('/team', TeamIndex::class)->name('admin.team');
     Route::get('/testimonials', TestimonialsIndex::class)->name('admin.testimonials');
     Route::get('/contacts', ContactsIndex::class)->name('admin.contacts');

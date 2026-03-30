@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ContactController;
+use App\Http\Controllers\Api\GlobalStatController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\SettingController;
@@ -43,6 +44,12 @@ Route::prefix('v1')->middleware('api.key')->group(function () {
     Route::get('/stats/{id}', [StatController::class, 'show']);
     Route::put('/stats/{id}', [StatController::class, 'update']);
     Route::delete('/stats/{id}', [StatController::class, 'destroy']);
+
+    Route::get('/global-stats', [GlobalStatController::class, 'index']);
+    Route::post('/global-stats', [GlobalStatController::class, 'store']);
+    Route::get('/global-stats/{id}', [GlobalStatController::class, 'show']);
+    Route::put('/global-stats/{id}', [GlobalStatController::class, 'update']);
+    Route::delete('/global-stats/{id}', [GlobalStatController::class, 'destroy']);
 
     Route::get('/team', [TeamController::class, 'index']);
     Route::post('/team', [TeamController::class, 'store']);

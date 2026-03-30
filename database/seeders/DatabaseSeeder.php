@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
+use App\Models\GlobalStat;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\SiteSetting;
@@ -22,9 +23,26 @@ class DatabaseSeeder extends Seeder
         $this->seedProjects();
         $this->seedServices();
         $this->seedSettings();
+        $this->seedGlobalStats();
         $this->seedStats();
         $this->seedTeamMembers();
         $this->seedTestimonials();
+    }
+
+    private function seedGlobalStats()
+    {
+        $globalStats = [
+            ['id' => 'gs_1', 'key' => 'projects_delivered', 'label' => 'Projects Delivered', 'value' => '150+', 'icon' => 'bi-briefcase', 'display_order' => 1, 'status' => 'published'],
+            ['id' => 'gs_2', 'key' => 'happy_clients', 'label' => 'Happy Clients', 'value' => '85+', 'icon' => 'bi-emoji-smile', 'display_order' => 2, 'status' => 'published'],
+            ['id' => 'gs_3', 'key' => 'years_experience', 'label' => 'Years Experience', 'value' => '12+', 'icon' => 'bi-calendar', 'display_order' => 3, 'status' => 'published'],
+            ['id' => 'gs_4', 'key' => 'team_experts', 'label' => 'Team Experts', 'value' => '40+', 'icon' => 'bi-people', 'display_order' => 4, 'status' => 'published'],
+            ['id' => 'gs_5', 'key' => 'client_satisfaction', 'label' => 'Client Satisfaction', 'value' => '98%', 'icon' => 'bi-heart', 'display_order' => 5, 'status' => 'published'],
+            ['id' => 'gs_6', 'key' => 'support_available', 'label' => 'Support Available', 'value' => '24/7', 'icon' => 'bi-headset', 'display_order' => 6, 'status' => 'published'],
+        ];
+
+        foreach ($globalStats as $stat) {
+            GlobalStat::updateOrCreate(['id' => $stat['id']], $stat);
+        }
     }
 
     private function seedCategories()
@@ -109,32 +127,28 @@ class DatabaseSeeder extends Seeder
 
     private function seedStats()
     {
+        // Section-specific stats only (unique to each section)
+        // Global stats should be managed in GlobalStats
         $stats = [
-            ['id' => 'hero_1', 'section' => 'hero', 'label' => 'Projects Delivered', 'value' => '150+', 'icon' => 'bi-briefcase', 'display_order' => 1, 'status' => 'published'],
-            ['id' => 'hero_2', 'section' => 'hero', 'label' => 'Client Satisfaction', 'value' => '98%', 'icon' => 'bi-heart', 'display_order' => 2, 'status' => 'published'],
-            ['id' => 'hero_3', 'section' => 'hero', 'label' => 'Years Experience', 'value' => '12+', 'icon' => 'bi-calendar', 'display_order' => 3, 'status' => 'published'],
-            ['id' => 'hero_4', 'section' => 'hero', 'label' => 'Team Experts', 'value' => '40+', 'icon' => 'bi-people', 'display_order' => 4, 'status' => 'published'],
+            // Hero section - no section-specific stats, uses global stats
+            // About section
             ['id' => 'about_1', 'section' => 'about', 'label' => 'Years of Excellence', 'value' => '12', 'icon' => 'bi-award', 'display_order' => 1, 'status' => 'published'],
-            ['id' => 'about_2', 'section' => 'about', 'label' => 'Projects Done', 'value' => '150', 'icon' => 'bi-check-circle', 'display_order' => 2, 'status' => 'published'],
-            ['id' => 'about_3', 'section' => 'about', 'label' => 'Happy Clients', 'value' => '85', 'icon' => 'bi-emoji-smile', 'display_order' => 3, 'status' => 'published'],
-            ['id' => 'about_4', 'section' => 'about', 'label' => 'Retention', 'value' => '95%', 'icon' => 'bi-graph-up', 'display_order' => 4, 'status' => 'published'],
-            ['id' => 'services_1', 'section' => 'services', 'label' => 'Projects Delivered', 'value' => '250+', 'icon' => 'bi-briefcase', 'display_order' => 1, 'status' => 'published'],
-            ['id' => 'services_2', 'section' => 'services', 'label' => 'Client Satisfaction', 'value' => '98%', 'icon' => 'bi-heart', 'display_order' => 2, 'status' => 'published'],
-            ['id' => 'services_3', 'section' => 'services', 'label' => 'Years Experience', 'value' => '15+', 'icon' => 'bi-calendar', 'display_order' => 3, 'status' => 'published'],
-            ['id' => 'services_4', 'section' => 'services', 'label' => 'Team Experts', 'value' => '40+', 'icon' => 'bi-people', 'display_order' => 4, 'status' => 'published'],
+            ['id' => 'about_2', 'section' => 'about', 'label' => 'Retention Rate', 'value' => '95%', 'icon' => 'bi-graph-up', 'display_order' => 2, 'status' => 'published'],
+            // Services section - no section-specific stats
+            // Why Us section
             ['id' => 'whyus_1', 'section' => 'why_us', 'label' => 'Successful Campaigns', 'value' => '180+', 'icon' => 'bi-megaphone', 'display_order' => 1, 'status' => 'published'],
-            ['id' => 'whyus_2', 'section' => 'why_us', 'label' => 'Customer Satisfaction', 'value' => '95%', 'icon' => 'bi-heart', 'display_order' => 2, 'status' => 'published'],
-            ['id' => 'whyus_3', 'section' => 'why_us', 'label' => 'Growth Achieved', 'value' => '320%', 'icon' => 'bi-graph-up-arrow', 'display_order' => 3, 'status' => 'published'],
-            ['id' => 'contact_1', 'section' => 'contact', 'label' => 'Satisfaction', 'value' => '98%', 'icon' => 'bi-heart', 'display_order' => 1, 'status' => 'published'],
-            ['id' => 'contact_2', 'section' => 'contact', 'label' => 'Support', 'value' => '24/7', 'icon' => 'bi-headset', 'display_order' => 2, 'status' => 'published'],
-            ['id' => 'contact_3', 'section' => 'contact', 'label' => 'Projects', 'value' => '3.2k', 'icon' => 'bi-folder', 'display_order' => 3, 'status' => 'published'],
+            ['id' => 'whyus_2', 'section' => 'why_us', 'label' => 'Growth Achieved', 'value' => '320%', 'icon' => 'bi-graph-up-arrow', 'display_order' => 2, 'status' => 'published'],
+            // Contact section
+            ['id' => 'contact_1', 'section' => 'contact', 'label' => 'Response Time', 'value' => '<1hr', 'icon' => 'bi-lightning', 'display_order' => 1, 'status' => 'published'],
+            ['id' => 'contact_2', 'section' => 'contact', 'label' => 'Projects Completed', 'value' => '3.2k+', 'icon' => 'bi-folder', 'display_order' => 2, 'status' => 'published'],
+            // Portfolio details section
             ['id' => 'portfolio_1', 'section' => 'portfolio_details', 'label' => 'Monthly Users', 'value' => '25k+', 'icon' => 'bi-people', 'display_order' => 1, 'status' => 'published'],
             ['id' => 'portfolio_2', 'section' => 'portfolio_details', 'label' => 'Uptime', 'value' => '99.9%', 'icon' => 'bi-server', 'display_order' => 2, 'status' => 'published'],
             ['id' => 'portfolio_3', 'section' => 'portfolio_details', 'label' => 'Team Members', 'value' => '12', 'icon' => 'bi-person', 'display_order' => 3, 'status' => 'published'],
-            ['id' => 'portfolio_4', 'section' => 'portfolio_details', 'label' => 'Client Rating', 'value' => '4.9', 'icon' => 'bi-star', 'display_order' => 4, 'status' => 'published'],
-            ['id' => 'servicedetails_1', 'section' => 'service_details', 'label' => 'Projects Delivered', 'value' => '850+', 'icon' => 'bi-briefcase', 'display_order' => 1, 'status' => 'published'],
-            ['id' => 'servicedetails_2', 'section' => 'service_details', 'label' => 'Client Satisfaction', 'value' => '99%', 'icon' => 'bi-heart', 'display_order' => 2, 'status' => 'published'],
-            ['id' => 'servicedetails_3', 'section' => 'service_details', 'label' => 'Support Available', 'value' => '24/7', 'icon' => 'bi-headset', 'display_order' => 3, 'status' => 'published'],
+            ['id' => 'portfolio_4', 'section' => 'portfolio_details', 'label' => 'Client Rating', 'value' => '4.9/5', 'icon' => 'bi-star', 'display_order' => 4, 'status' => 'published'],
+            // Service details section
+            ['id' => 'servicedetails_1', 'section' => 'service_details', 'label' => 'On-Time Delivery', 'value' => '99%', 'icon' => 'bi-clock', 'display_order' => 1, 'status' => 'published'],
+            ['id' => 'servicedetails_2', 'section' => 'service_details', 'label' => 'Repeat Clients', 'value' => '85%', 'icon' => 'bi-arrow-repeat', 'display_order' => 2, 'status' => 'published'],
         ];
 
         foreach ($stats as $stat) {
