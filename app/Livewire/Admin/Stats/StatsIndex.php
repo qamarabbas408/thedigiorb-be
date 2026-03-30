@@ -104,6 +104,7 @@ class StatsIndex extends AdminComponent
             Stat::where('id', $this->editingStat['id'])->update($data);
             $this->dispatch('toast', ['message' => 'Stat updated successfully!', 'type' => 'success']);
         } else {
+            $data['id'] = (string) time() . '_' . rand(100, 999);
             Stat::create($data);
             $this->dispatch('toast', ['message' => 'Stat created successfully!', 'type' => 'success']);
         }
