@@ -11,7 +11,7 @@ use App\Http\Controllers\Api\TestimonialController;
 use App\Http\Controllers\Api\UploadController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('v1')->group(function () {
+Route::prefix('v1')->middleware('api.key')->group(function () {
     Route::get('/contacts', [ContactController::class, 'index']);
     Route::post('/contacts', [ContactController::class, 'store']);
     Route::get('/contacts/{id}', [ContactController::class, 'show']);
