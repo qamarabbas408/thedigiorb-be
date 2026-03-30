@@ -88,7 +88,7 @@ class DatabaseSeeder extends Seeder
     {
         $settings = [
             ['setting_key' => 'company_name', 'setting_value' => 'DigitalOrbit'],
-            ['setting_key' => 'company_email', 'setting_value' => 'support@digitalorbit.org'],
+            ['setting_key' => 'company_email', 'setting_value' => 'support@thedigiorb.com'],
             ['setting_key' => 'company_phone', 'setting_value' => '+92 311 1588908'],
             ['setting_key' => 'company_address', 'setting_value' => 'Pakistan'],
             ['setting_key' => 'company_description', 'setting_value' => 'Building innovative digital solutions for your business. We specialize in web development, mobile applications, and custom software.'],
