@@ -132,6 +132,20 @@ class ProjectController extends Controller
 
     private function formatProject($project)
     {
+        $placeholderImages = [
+            'web-design' => '/assets/img/portfolio/portfolio-1.webp',
+            'mobile-design' => '/assets/img/portfolio/portfolio-3.webp',
+            'branding' => '/assets/img/portfolio/portfolio-5.webp',
+            'ui-ux' => '/assets/img/portfolio/portfolio-7.webp',
+            'desktop-app' => '/assets/img/portfolio/portfolio-9.webp',
+            'default' => '/assets/img/portfolio/portfolio-1.webp',
+        ];
+
+        $image = $project->image;
+        if (!$image) {
+            $image = $placeholderImages[$project->category_id] ?? $placeholderImages['default'];
+        }
+
         return [
             'id' => $project->id,
             'title' => $project->title,
@@ -140,7 +154,7 @@ class ProjectController extends Controller
             'year' => $project->year,
             'technologies' => is_array($project->technologies) ? $project->technologies : json_decode($project->technologies, true) ?? [],
             'description' => $project->description,
-            'image' => $project->image ?: '/assets/img/portfolio/placeholder.webp',
+            'image' => $image,
             'gallery' => is_array($project->gallery) ? $project->gallery : json_decode($project->gallery, true) ?? [],
             'featured' => (bool) $project->featured,
             'client' => $project->client,
