@@ -10,13 +10,10 @@ use App\Livewire\Admin\Team\TeamIndex;
 use App\Livewire\Admin\Testimonials\TestimonialsIndex;
 use App\Livewire\Admin\Contacts\ContactsIndex;
 use App\Livewire\Admin\Settings\SettingsIndex;
-use App\Livewire\Admin\Login;
-
-Route::get('/login', Login::class)->name('admin.login');
 
 Route::post('/logout', function () {
     session()->forget('admin_authenticated');
-    return redirect()->route('admin.login');
+    return redirect('/');
 })->name('admin.logout');
 
 Route::middleware('admin.auth')->group(function () {
