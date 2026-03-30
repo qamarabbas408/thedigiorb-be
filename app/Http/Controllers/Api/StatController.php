@@ -23,9 +23,9 @@ class StatController extends Controller
 
         $stats = $query->orderBy('section')->orderBy('display_order')->orderBy('created_at', 'DESC')->get();
 
-        $stats = $stats->map(function ($stat) {
+        $sectionStats = $stats->map(function ($stat) {
             return $this->formatStat($stat);
-        });
+        })->toArray();
 
         if ($request->boolean('include_global', false) && $request->has('section')) {
             $section = $request->section;
@@ -34,9 +34,11 @@ class StatController extends Controller
                 ->filter(fn($stat) => $stat->shouldAppearIn($section))
                 ->sortBy('display_order')
                 ->map(fn($stat) => $stat->toStatFormat($section))
-                ->values();
+                ->toArray();
 
-            $stats = $globalStats->merge($stats)->values()->all();
+            $stats = array_merge($globalStats, $sectionStats);
+        } else {
+            $stats = $sectionStats;
         }
 
         return $this->success($stats);
