@@ -45,6 +45,7 @@ class GlobalStatsIndex extends AdminComponent
         ['value' => 'about', 'label' => 'About'],
         ['value' => 'services', 'label' => 'Services'],
         ['value' => 'why_us', 'label' => 'Why Us'],
+        ['value' => 'team', 'label' => 'Team'],
         ['value' => 'contact', 'label' => 'Contact'],
     ];
 
