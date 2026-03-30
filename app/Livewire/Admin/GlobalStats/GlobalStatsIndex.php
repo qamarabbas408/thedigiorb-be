@@ -18,6 +18,7 @@ class GlobalStatsIndex extends AdminComponent
     public $icon = 'bi-briefcase';
     public $displayOrder = 0;
     public $status = 'published';
+    public $selectedSections = [];
     public $showDeleteModal = false;
     public $deleteId = null;
 
@@ -37,6 +38,14 @@ class GlobalStatsIndex extends AdminComponent
         ['value' => 'bi-star', 'label' => 'Star'],
         ['value' => 'bi-rocket-takeoff', 'label' => 'Rocket'],
         ['value' => 'bi-lightbulb', 'label' => 'Lightbulb'],
+    ];
+
+    public $sectionOptions = [
+        ['value' => 'hero', 'label' => 'Hero'],
+        ['value' => 'about', 'label' => 'About'],
+        ['value' => 'services', 'label' => 'Services'],
+        ['value' => 'why_us', 'label' => 'Why Us'],
+        ['value' => 'contact', 'label' => 'Contact'],
     ];
 
     public function mount()
@@ -59,6 +68,7 @@ class GlobalStatsIndex extends AdminComponent
             $this->icon = $stat['icon'] ?? 'bi-briefcase';
             $this->displayOrder = $stat['display_order'] ?? 0;
             $this->status = $stat['status'] ?? 'published';
+            $this->selectedSections = $stat['sections'] ?? [];
         } else {
             $this->resetForm();
             $this->displayOrder = count($this->stats) + 1;
@@ -80,6 +90,7 @@ class GlobalStatsIndex extends AdminComponent
         $this->icon = 'bi-briefcase';
         $this->displayOrder = 0;
         $this->status = 'published';
+        $this->selectedSections = [];
     }
 
     public function save()
@@ -90,6 +101,7 @@ class GlobalStatsIndex extends AdminComponent
             'icon' => $this->icon,
             'display_order' => $this->displayOrder,
             'status' => $this->status,
+            'sections' => $this->selectedSections,
         ];
 
         if ($this->editingStat) {

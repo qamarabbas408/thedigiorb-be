@@ -33,6 +33,8 @@ class GlobalStatController extends Controller
             'icon' => 'nullable|string|max:100',
             'displayOrder' => 'nullable|integer',
             'status' => 'nullable|string|max:20',
+            'sections' => 'nullable|array',
+            'sections.*' => 'string',
         ]);
 
         $key = \Illuminate\Support\Str::slug($validated['label'], '_');
@@ -45,6 +47,7 @@ class GlobalStatController extends Controller
             'icon' => $validated['icon'] ?? '',
             'display_order' => $validated['displayOrder'] ?? 0,
             'status' => $validated['status'] ?? 'published',
+            'sections' => $validated['sections'] ?? [],
         ]);
 
         return $this->created($stat->toStatFormat('global'));
@@ -75,6 +78,8 @@ class GlobalStatController extends Controller
             'icon' => 'nullable|string|max:100',
             'displayOrder' => 'nullable|integer',
             'status' => 'nullable|string|max:20',
+            'sections' => 'nullable|array',
+            'sections.*' => 'string',
         ]);
 
         $stat->update([
@@ -83,6 +88,7 @@ class GlobalStatController extends Controller
             'icon' => $validated['icon'] ?? '',
             'display_order' => $validated['displayOrder'] ?? 0,
             'status' => $validated['status'] ?? 'published',
+            'sections' => $validated['sections'] ?? [],
         ]);
 
         return $this->success($stat->fresh()->toStatFormat('global'));

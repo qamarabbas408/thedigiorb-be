@@ -17,10 +17,12 @@ class GlobalStat extends Model
         'icon',
         'display_order',
         'status',
+        'sections',
     ];
 
     protected $casts = [
         'display_order' => 'integer',
+        'sections' => 'array',
     ];
 
     public function toStatFormat(string $section = 'global'): array
@@ -38,5 +40,13 @@ class GlobalStat extends Model
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
+    }
+
+    public function shouldAppearIn(string $section): bool
+    {
+        if (empty($this->sections)) {
+            return false;
+        }
+        return in_array($section, $this->sections);
     }
 }

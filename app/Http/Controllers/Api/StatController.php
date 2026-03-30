@@ -28,10 +28,13 @@ class StatController extends Controller
         });
 
         if ($request->boolean('include_global', false) && $request->has('section')) {
+            $section = $request->section;
             $globalStats = GlobalStat::where('status', 'published')
-                ->orderBy('display_order')
                 ->get()
-                ->map(fn($stat) => $stat->toStatFormat($request->section));
+                ->filter(fn($stat) => $stat->shouldAppearIn($section))
+                ->sortBy('display_order')
+                ->map(fn($stat) => $stat->toStatFormat($section))
+                ->values();
 
             $stats = $globalStats->merge($stats)->values()->all();
         }

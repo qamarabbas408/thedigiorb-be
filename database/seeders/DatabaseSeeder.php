@@ -32,12 +32,12 @@ class DatabaseSeeder extends Seeder
     private function seedGlobalStats()
     {
         $globalStats = [
-            ['id' => 'gs_1', 'key' => 'projects_delivered', 'label' => 'Projects Delivered', 'value' => '150+', 'icon' => 'bi-briefcase', 'display_order' => 1, 'status' => 'published'],
-            ['id' => 'gs_2', 'key' => 'happy_clients', 'label' => 'Happy Clients', 'value' => '85+', 'icon' => 'bi-emoji-smile', 'display_order' => 2, 'status' => 'published'],
-            ['id' => 'gs_3', 'key' => 'years_experience', 'label' => 'Years Experience', 'value' => '12+', 'icon' => 'bi-calendar', 'display_order' => 3, 'status' => 'published'],
-            ['id' => 'gs_4', 'key' => 'team_experts', 'label' => 'Team Experts', 'value' => '40+', 'icon' => 'bi-people', 'display_order' => 4, 'status' => 'published'],
-            ['id' => 'gs_5', 'key' => 'client_satisfaction', 'label' => 'Client Satisfaction', 'value' => '98%', 'icon' => 'bi-heart', 'display_order' => 5, 'status' => 'published'],
-            ['id' => 'gs_6', 'key' => 'support_available', 'label' => 'Support Available', 'value' => '24/7', 'icon' => 'bi-headset', 'display_order' => 6, 'status' => 'published'],
+            ['id' => 'gs_1', 'key' => 'projects_delivered', 'label' => 'Projects Delivered', 'value' => '150+', 'icon' => 'bi-briefcase', 'display_order' => 1, 'status' => 'published', 'sections' => ['hero', 'services']],
+            ['id' => 'gs_2', 'key' => 'happy_clients', 'label' => 'Happy Clients', 'value' => '85+', 'icon' => 'bi-emoji-smile', 'display_order' => 2, 'status' => 'published', 'sections' => ['hero', 'about']],
+            ['id' => 'gs_3', 'key' => 'years_experience', 'label' => 'Years Experience', 'value' => '12+', 'icon' => 'bi-calendar', 'display_order' => 3, 'status' => 'published', 'sections' => ['hero', 'about', 'services']],
+            ['id' => 'gs_4', 'key' => 'team_experts', 'label' => 'Team Experts', 'value' => '40+', 'icon' => 'bi-people', 'display_order' => 4, 'status' => 'published', 'sections' => ['hero']],
+            ['id' => 'gs_5', 'key' => 'client_satisfaction', 'label' => 'Client Satisfaction', 'value' => '98%', 'icon' => 'bi-heart', 'display_order' => 5, 'status' => 'published', 'sections' => ['hero', 'services', 'contact']],
+            ['id' => 'gs_6', 'key' => 'support_available', 'label' => 'Support Available', 'value' => '24/7', 'icon' => 'bi-headset', 'display_order' => 6, 'status' => 'published', 'sections' => ['contact']],
         ];
 
         foreach ($globalStats as $stat) {

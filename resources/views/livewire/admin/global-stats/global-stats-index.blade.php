@@ -1,7 +1,7 @@
 <div class="p-6" x-data="{ showModal: @entangle('showModal'), showDeleteModal: @entangle('showDeleteModal') }">
     <div class="mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Global Stats</h1>
-        <p class="text-gray-600">Manage shared stats that appear across all sections. Changes sync everywhere automatically.</p>
+        <p class="text-gray-600">Manage shared stats that appear in specific sections. Changes sync everywhere automatically.</p>
     </div>
 
     <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100 p-4 mb-6">
@@ -11,7 +11,7 @@
             </div>
             <div>
                 <h3 class="font-medium text-gray-900">Universal Stats</h3>
-                <p class="text-sm text-gray-600">These stats appear in all sections where they're needed. Edit once, update everywhere.</p>
+                <p class="text-sm text-gray-600">Select which sections each stat should appear in. Edit once, update everywhere.</p>
             </div>
         </div>
     </div>
@@ -35,7 +35,7 @@
             <div class="p-12 text-center">
                 <i class="bi bi-globe2 text-5xl text-gray-300 mb-4"></i>
                 <h3 class="text-lg font-medium text-gray-700 mb-2">No global stats yet</h3>
-                <p class="text-gray-500 mb-4">Add stats here and they'll appear across all your website sections.</p>
+                <p class="text-gray-500 mb-4">Add stats here and configure which sections they should appear in.</p>
                 <button wire:click="openModal()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Add Global Stat</button>
             </div>
         @else
@@ -45,9 +45,9 @@
                         <tr class="bg-gray-50">
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Icon</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Key</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Label</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Value</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sections</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                         </tr>
@@ -61,14 +61,24 @@
                                         <i class="bi {{ $stat['icon'] }} text-blue-600 text-lg"></i>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4">
-                                    <code class="text-xs bg-gray-100 px-2 py-1 rounded">{{ $stat['key'] }}</code>
-                                </td>
                                 <td class="px-6 py-4 font-medium text-gray-900">{{ $stat['label'] }}</td>
                                 <td class="px-6 py-4">
                                     <span class="inline-flex items-center px-2.5 py-0.5 bg-green-100 text-green-800 rounded text-sm font-medium">
                                         {{ $stat['value'] }}
                                     </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex flex-wrap gap-1">
+                                        @if(empty($stat['sections']))
+                                            <span class="text-xs text-gray-400 italic">None</span>
+                                        @else
+                                            @foreach($stat['sections'] as $section)
+                                                <span class="inline-flex items-center px-2 py-0.5 bg-slate-100 text-slate-700 rounded text-xs font-medium capitalize">
+                                                    {{ str_replace('_', ' ', $section) }}
+                                                </span>
+                                            @endforeach
+                                        @endif
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $stat['status'] === 'published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
@@ -95,7 +105,7 @@
             <i class="bi bi-info-circle text-amber-600 mt-0.5"></i>
             <div class="text-sm">
                 <p class="font-medium text-amber-800">How Global Stats Work</p>
-                <p class="text-amber-700 mt-1">Global stats are automatically included when fetching section-specific stats with the <code class="bg-amber-100 px-1 rounded">include_global=true</code> parameter. They're useful for common metrics like "Projects Delivered", "Happy Clients", etc.</p>
+                <p class="text-amber-700 mt-1">Select the sections where each stat should appear. Only published stats with matching sections will be shown on the frontend.</p>
             </div>
         </div>
     </div>
@@ -130,6 +140,18 @@
                                 <i class="bi {{ $icon }} text-blue-600 text-lg"></i>
                             </div>
                             <span class="text-xs text-gray-500">Preview</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Sections *</label>
+                        <p class="text-xs text-gray-500 mb-2">Select where this stat should appear</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            @foreach($sectionOptions as $opt)
+                                <label class="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                    <input type="checkbox" wire:model.live="selectedSections" value="{{ $opt['value'] }}" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-sm">{{ $opt['label'] }}</span>
+                                </label>
+                            @endforeach
                         </div>
                     </div>
                     <div>
