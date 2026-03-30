@@ -141,15 +141,7 @@ class ProjectController extends Controller
             'default' => '/assets/img/portfolio/portfolio-1.webp',
         ];
 
-        $image = $project->image;
-        
-        if ($image) {
-            if (str_starts_with($image, '/storage/')) {
-                $image = env('APP_URL', 'http://localhost:8000') . $image;
-            }
-        } else {
-            $image = $placeholderImages[$project->category_id] ?? $placeholderImages['default'];
-        }
+        $image = $project->image ?: ($placeholderImages[$project->category_id] ?? $placeholderImages['default']);
 
         return [
             'id' => $project->id,
