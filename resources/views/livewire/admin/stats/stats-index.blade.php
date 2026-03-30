@@ -6,7 +6,7 @@
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
         <label class="block text-sm font-medium text-gray-700 mb-2">Select Section</label>
-        <select wire:model="selectedSection" class="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+        <select wire:model.live="selectedSection" class="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
             @foreach($sections as $section)
                 <option value="{{ $section['value'] }}">{{ $section['label'] }}</option>
             @endforeach

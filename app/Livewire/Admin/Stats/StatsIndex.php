@@ -4,6 +4,7 @@ namespace App\Livewire\Admin\Stats;
 
 use App\Livewire\Admin\AdminComponent;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Reactive;
 use App\Models\Stat;
 
 #[Layout('layouts.admin')]
@@ -22,6 +23,7 @@ class StatsIndex extends AdminComponent
     public $showDeleteModal = false;
     public $deleteId = null;
 
+    #[Reactive]
     public $sections = [
         ['value' => 'hero', 'label' => 'Hero Section'],
         ['value' => 'about', 'label' => 'About Section'],
