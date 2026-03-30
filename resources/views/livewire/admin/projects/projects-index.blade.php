@@ -123,7 +123,7 @@
 
     <!-- Add/Edit Modal -->
     @if($showModal)
-        <div class="fixed inset-0 z-[9999] overflow-y-auto">
+        <div class="fixed inset-0 z-9999 overflow-y-auto">
             <div class="flex min-h-screen items-center justify-center p-4">
                 <div class="fixed inset-0 bg-black/50 transition-opacity" wire:click="closeModal"></div>
                 <div class="relative bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto scrollbar-light">
@@ -313,40 +313,43 @@
                     <div class="mt-4">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Gallery Images (up to 5 total)</label>
                         
-                        <!-- Current Gallery Images -->
-                        @if(!empty($gallery))
+                        @php
+                            $galleryArray = is_array($gallery) ? $gallery : (is_string($gallery) ? json_decode($gallery, true) : []);
+                            $galleryArray = $galleryArray ?? [];
+                        @endphp
+                        
+                        @if(!empty($galleryArray))
                             <div class="mb-4">
                                 <p class="text-sm font-medium text-gray-700 mb-2">Current Gallery Images:</p>
                                 <div class="grid grid-cols-5 gap-2">
-                                    @foreach($gallery as $index => $galleryImage)
+                                    @foreach($galleryArray as $index => $galleryImage)
                                         <div class="relative group">
                                             <img src="{{ $galleryImage }}" alt="Gallery image {{ $index + 1 }}" class="w-full h-20 object-cover rounded border border-gray-200">
-                                            <button
-                                                type="button"
-                                                wire:click="removeGalleryImage({{ $index }})"
-                                                class="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-700"
-                                            >
-                                                <i class="bi bi-x text-xs"></i>
-                                            </button>
-                                        </div>
+                                        <button
+                                            type="button"
+                                            wire:click="removeGalleryImage({{ $index }})"
+                                            class="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-700"
+                                        >
+                                            <i class="bi bi-x text-xs"></i>
+                                        </button>
+                                    </div>
                                     @endforeach
                                 </div>
-                                <p class="text-xs text-gray-500 mt-1">{{ count($gallery) }}/5 images</p>
+                                <p class="text-xs text-gray-500 mt-1">{{ is_countable($galleryArray) ? count($galleryArray) : 0 }}/5 images</p>
                             </div>
                         @endif
                         
-                        <!-- Gallery Upload Component -->
                         <livewire:admin.components.file-upload 
-                            :maxFiles="(5 - count($gallery))"
+                            :maxFiles="(5 - (is_countable($galleryArray) ? count($galleryArray) : 0))"
                             directory="projects/gallery"
                             previewImages="true"
                             showProgress="false"
-                            wire:key="gallery-upload-{{ count($gallery) }}"
+                            wire:key="'gallery-upload-' . (is_countable($galleryArray) ? count($galleryArray) : 0)"
                             on-file-uploaded="onFileUploaded"
                             on-file-removed="onFileRemoved"
                         />
                         
-                        @if(count($gallery) >= 5)
+                        @if(is_countable($galleryArray) && count($galleryArray) >= 5)
                             <p class="text-sm text-amber-600 mt-2">Maximum gallery images reached (5)</p>
                         @endif
                     </div>
@@ -403,7 +406,7 @@
 
     <!-- Delete Confirmation Modal -->
     @if($showDeleteModal)
-        <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
+        <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-9999">
             <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
                 <div class="text-center">
                     <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">

@@ -98,6 +98,11 @@ class ProjectsIndex extends AdminComponent
 
     public function openModal($project = null)
     {
+        // Prevent modal from opening if already open
+        if ($this->showModal) {
+            return;
+        }
+        
         if ($project) {
             $this->editingProject = $project;
             $this->title = $project['title'];
@@ -109,7 +114,7 @@ class ProjectsIndex extends AdminComponent
             $this->image = $project['image'] ?? '';
             $this->imageUrl = '';
             $this->imageTab = 'upload'; // Default to upload tab
-            $this->gallery = $project['gallery'] ?? [];
+            $this->gallery = is_array($project['gallery'] ?? []) ? $project['gallery'] : (is_string($project['gallery'] ?? '') ? json_decode($project['gallery'] ?? '[]', true) : []);
             $this->client = $project['client'] ?? '';
             $this->url = $project['url'] ?? '';
             $this->featured = $project['featured'] ?? false;
@@ -317,11 +322,15 @@ class ProjectsIndex extends AdminComponent
         }
     }
 
-    // Handle file upload events from the FileUpload component
     public function onFileUploaded($fileData)
     {
-        // Add the uploaded file URL directly to the gallery
         \Log::info('onFileUploaded received: ' . json_encode($fileData));
+        
+        // Ensure gallery is always an array
+        if (!is_array($this->gallery)) {
+            $this->gallery = is_string($this->gallery) ? json_decode($this->gallery, true) : [];
+        }
+        
         $this->gallery[] = $fileData['url'];
         \Log::info('Gallery now has ' . count($this->gallery) . ' images');
     }
@@ -331,6 +340,12 @@ class ProjectsIndex extends AdminComponent
     public function handleFileUploaded($fileData)
     {
         \Log::info('handleFileUploaded received: ' . json_encode($fileData));
+        
+        // Ensure gallery is always an array
+        if (!is_array($this->gallery)) {
+            $this->gallery = is_string($this->gallery) ? json_decode($this->gallery, true) : [];
+        }
+        
         $this->gallery[] = $fileData['url'];
         \Log::info('Gallery now has ' . count($this->gallery) . ' images');
     }
@@ -338,6 +353,12 @@ class ProjectsIndex extends AdminComponent
     public function onFileRemoved($index)
     {
         \Log::info('onFileRemoved received for index: ' . $index);
+        
+        // Ensure gallery is always an array
+        if (!is_array($this->gallery)) {
+            $this->gallery = is_string($this->gallery) ? json_decode($this->gallery, true) : [];
+        }
+        
         if (isset($this->gallery[$index])) {
             // Delete file from storage
             $uploadService = app(\App\Services\FileUploadService::class);

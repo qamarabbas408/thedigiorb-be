@@ -1,3 +1,6 @@
+@php
+    $inputId = 'file-upload-' . uniqid();
+@endphp
 <div class="space-y-4">
     <!-- Upload Area -->
     @if($canUploadMore ?? true)
@@ -5,7 +8,7 @@
             <div class="text-center">
                 <i class="bi bi-cloud-upload text-4xl text-gray-400 mb-3"></i>
                 <div class="mb-4">
-                    <label for="{{ $attributes->get('id', 'file-upload') }}" class="cursor-pointer">
+                    <label for="{{ $inputId }}" class="cursor-pointer">
                         <span class="mt-2 block text-sm font-medium text-gray-900">
                             Click to upload or drag and drop
                         </span>
@@ -15,12 +18,11 @@
                     </label>
                     <input
                         type="file"
-                        id="{{ $attributes->get('id', 'file-upload') }}"
+                        id="{{ $inputId }}"
                         wire:model="files"
                         accept="{{ $accept ?? 'image/*' }}"
                         multiple
                         class="sr-only"
-                        @change="$wire.uploadFiles()"
                     />
                 </div>
             </div>

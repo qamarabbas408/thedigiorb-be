@@ -33,7 +33,7 @@ class Login extends Component
     public function render()
     {
         if (session()->get('admin_authenticated')) {
-            return $this->redirect('/admin');
+            return redirect('/admin');
         }
         
         return view('livewire.admin.login');

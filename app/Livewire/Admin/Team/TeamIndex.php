@@ -45,6 +45,11 @@ class TeamIndex extends AdminComponent
 
     public function openModal($member = null)
     {
+        // Prevent modal from opening if already open
+        if ($this->showModal) {
+            return;
+        }
+        
         if ($member) {
             $this->editingMember = $member;
             $this->name = $member['name'];
