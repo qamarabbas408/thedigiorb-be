@@ -127,7 +127,7 @@ class TeamController extends Controller
             'name' => $member->name,
             'role' => $member->role,
             'bio' => $member->bio,
-            'image' => $member->image ?: '/assets/img/team/placeholder.webp',
+            'image' => $member->image ?: '/assets/img/team/person-m-1.webp',
             'facebook_url' => $member->facebook_url,
             'twitter_url' => $member->twitter_url,
             'linkedin_url' => $member->linkedin_url,
