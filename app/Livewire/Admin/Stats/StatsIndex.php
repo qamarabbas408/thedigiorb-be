@@ -29,6 +29,7 @@ class StatsIndex extends AdminComponent
         ['value' => 'about', 'label' => 'About Section'],
         ['value' => 'services', 'label' => 'Services Section'],
         ['value' => 'why_us', 'label' => 'Why Us Section'],
+        ['value' => 'team', 'label' => 'Team Section'],
         ['value' => 'contact', 'label' => 'Contact Section'],
     ];
 
