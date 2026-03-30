@@ -114,9 +114,10 @@ class StatController extends Controller
             'label' => $stat->label,
             'value' => $stat->value,
             'icon' => $stat->icon,
-            'displayOrder' => $stat->display_order,
+            'display_order' => $stat->display_order,
             'status' => $stat->status,
-            'createdAt' => $stat->created_at,
+            'created_at' => $stat->created_at,
+            'updated_at' => $stat->updated_at,
         ];
     }
 }

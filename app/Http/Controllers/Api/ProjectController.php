@@ -136,7 +136,7 @@ class ProjectController extends Controller
             'id' => $project->id,
             'title' => $project->title,
             'subtitle' => $project->subtitle,
-            'categoryId' => $project->category_id,
+            'category_id' => $project->category_id,
             'year' => $project->year,
             'technologies' => is_array($project->technologies) ? $project->technologies : json_decode($project->technologies, true) ?? [],
             'description' => $project->description,
@@ -146,7 +146,8 @@ class ProjectController extends Controller
             'client' => $project->client,
             'url' => $project->url,
             'status' => $project->status,
-            'createdAt' => $project->created_at,
+            'created_at' => $project->created_at,
+            'updated_at' => $project->updated_at,
         ];
     }
 }

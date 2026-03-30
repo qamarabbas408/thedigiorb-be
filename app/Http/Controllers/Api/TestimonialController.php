@@ -128,7 +128,8 @@ class TestimonialController extends Controller
             'image' => $testimonial->image,
             'featured' => (bool) $testimonial->featured,
             'status' => $testimonial->status,
-            'createdAt' => $testimonial->created_at,
+            'created_at' => $testimonial->created_at,
+            'updated_at' => $testimonial->updated_at,
         ];
     }
 }

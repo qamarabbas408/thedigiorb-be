@@ -114,9 +114,10 @@ class ServiceController extends Controller
             'description' => $service->description,
             'icon' => $service->icon,
             'featured' => (bool) $service->featured,
-            'displayOrder' => $service->display_order,
+            'display_order' => $service->display_order,
             'status' => $service->status,
-            'createdAt' => $service->created_at,
+            'created_at' => $service->created_at,
+            'updated_at' => $service->updated_at,
         ];
     }
 }

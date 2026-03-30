@@ -8,11 +8,17 @@ use Illuminate\Http\Request;
 
 class TeamController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $members = TeamMember::where('status', 'active')
-            ->orderBy('display_order')
-            ->get();
+        $query = TeamMember::query();
+
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        } else {
+            $query->where('status', 'active');
+        }
+
+        $members = $query->orderBy('display_order')->get();
 
         $members = $members->map(function ($member) {
             return $this->formatMember($member);

@@ -22,7 +22,7 @@
 - **Categories**: 5 (Web Design, Mobile Design, Branding, UI/UX, Desktop App)
 - **Projects**: 16 sample projects
 - **Services**: 6 services
-- **Settings**: 12 settings (company info, contact, social links)
+- **Settings**: 13 settings (company info, contact, social links, logo_text)
 - **Stats**: 24 stats across 7 sections
 - **Team Members**: 4 team members
 - **Testimonials**: 3 sample testimonials
@@ -31,6 +31,8 @@
 - [x] Standardized API responses using ApiResponse trait
 - [x] Versioned API endpoints (`/api/v1/*`)
 - [x] Consistent error handling
+- [x] Snake_case field names (display_order, category_id, created_at, etc.)
+- [x] Team social links (facebook_url, twitter_url, linkedin_url, instagram_url)
 
 ## Project Structure
 
