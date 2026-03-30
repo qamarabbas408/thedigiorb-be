@@ -142,7 +142,12 @@ class ProjectController extends Controller
         ];
 
         $image = $project->image;
-        if (!$image) {
+        
+        if ($image) {
+            if (str_starts_with($image, '/storage/')) {
+                $image = env('APP_URL', 'http://localhost:8000') . $image;
+            }
+        } else {
             $image = $placeholderImages[$project->category_id] ?? $placeholderImages['default'];
         }
 
