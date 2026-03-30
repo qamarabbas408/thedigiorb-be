@@ -10,8 +10,8 @@ class VerifyApiKey
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $apiKey = $request->header('X-API-KEY');
-        $validApiKey = config('app.api_key');
+        $apiKey = $request->header('x-api-key');
+        $validApiKey = env('APP_API_KEY');
 
         if (!$apiKey || !$validApiKey || $apiKey !== $validApiKey) {
             return response()->json([
