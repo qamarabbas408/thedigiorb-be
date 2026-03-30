@@ -17,8 +17,9 @@
                 </div>
                 
                 <div class="p-6 space-y-6">
+                    <!-- Logo Type Selection -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Logo Type</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Logo Type</label>
                         <div class="flex gap-4">
                             <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="radio" wire:model="logo_type" value="text" class="w-4 h-4 text-blue-600" />
@@ -31,42 +32,153 @@
                         </div>
                     </div>
 
-                    @if($logo_type === 'image')
+                    @if($logo_type === 'text')
+                        <!-- Text Logo Section -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Logo Image URL</label>
-                            <input type="url" wire:model="logo_image" placeholder="https://..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
-                            @if($logo_image)
-                                <div class="mt-2">
-                                    <img src="{{ $logo_image }}" alt="Logo Preview" class="h-10 w-auto" />
+                            <h3 class="text-sm font-semibold text-gray-800 mb-4">Text Logo</h3>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Logo Text</label>
+                                <input 
+                                    type="text" 
+                                    wire:model="logo_text" 
+                                    placeholder="Enter text for text logo" 
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
+                                />
+                            </div>
+                        </div>
+                    @endif
+
+                    @if($logo_type === 'image')
+                        <!-- Image Logo Section -->
+                        <div>
+                            <h3 class="text-sm font-semibold text-gray-800 mb-4">Image Logo</h3>
+                            
+                            <!-- Tab Selection -->
+                            <div class="flex gap-4 mb-4">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" wire:model="logoTab" value="upload" class="w-4 h-4 text-blue-600" />
+                                    <span class="text-sm text-gray-700">Upload Image</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" wire:model="logoTab" value="url" class="w-4 h-4 text-blue-600" />
+                                    <span class="text-sm text-gray-700">Use URL</span>
+                                </label>
+                            </div>
+                            
+                            @if($logoTab === 'upload')
+                                <div class="flex items-start gap-4">
+                                    <div class="w-48 h-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50 overflow-hidden">
+                                        @if($logoImageFile)
+                                            <img src="{{ $logoImageFile->temporaryUrl() }}" alt="Logo Preview" class="max-w-full max-h-full object-contain" />
+                                        @elseif($logo_image)
+                                            <img src="{{ $logo_image }}" alt="Logo" class="max-w-full max-h-full object-contain" />
+                                        @else
+                                            <span class="text-gray-400 text-sm">No logo uploaded</span>
+                                        @endif
+                                    </div>
+                                    <div class="flex-1">
+                                        <input
+                                            type="file"
+                                            wire:model="logoImageFile"
+                                            accept="image/png,image/svg+xml,image/jpeg,image/webp"
+                                            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                        />
+                                        <p class="text-xs text-gray-500 mt-2">Recommended: 200x60px for best results</p>
+                                        @error('logoImageFile')
+                                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
+                            @else
+                                <div>
+                                    <input type="url" wire:model="logo_image_url" placeholder="https://example.com/logo.png" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                                    @if($logo_image_url)
+                                        <div class="mt-2">
+                                            <img src="{{ $logo_image_url }}" alt="Logo Preview" class="h-10 w-auto" />
+                                        </div>
+                                    @endif
                                 </div>
                             @endif
                         </div>
                     @endif
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Favicon URL</label>
-                        <input type="url" wire:model="favicon" placeholder="https://..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
-                        @if($favicon)
-                            <div class="mt-2 flex items-center gap-2">
-                                <img src="{{ $favicon }}" alt="Favicon Preview" class="w-6 h-6" />
-                                <span class="text-sm text-gray-500">Browser Tab</span>
+                    <!-- Favicon Upload -->
+                    <div class="border-t border-gray-200 pt-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Favicon (Browser Icon)</label>
+                        
+                        <!-- Tab Selection -->
+                        <div class="flex gap-4 mb-4">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" wire:model="faviconTab" value="upload" class="w-4 h-4 text-blue-600" />
+                                <span class="text-sm text-gray-700">Upload Image</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" wire:model="faviconTab" value="url" class="w-4 h-4 text-blue-600" />
+                                <span class="text-sm text-gray-700">Use URL</span>
+                            </label>
+                        </div>
+                        
+                        @if($faviconTab === 'upload')
+                            <div class="flex items-start gap-4">
+                                <div class="w-16 h-16 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50 overflow-hidden">
+                                    @if($faviconFile)
+                                        <img src="{{ $faviconFile->temporaryUrl() }}" alt="Favicon Preview" class="w-full h-full object-contain" />
+                                    @elseif($favicon)
+                                        <img src="{{ $favicon }}" alt="Favicon" class="w-full h-full object-contain" />
+                                    @else
+                                        <i class="bi bi-globe text-gray-400 text-2xl"></i>
+                                    @endif
+                                </div>
+                                <div class="flex-1">
+                                    <input
+                                        type="file"
+                                        wire:model="faviconFile"
+                                        accept="image/png,image/x-icon,image/svg+xml"
+                                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                    />
+                                    <p class="text-xs text-gray-500 mt-2">Recommended: 32x32px or 48x48px PNG</p>
+                                    @error('faviconFile')
+                                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+                        @else
+                            <div>
+                                <input type="url" wire:model="favicon_url" placeholder="https://example.com/favicon.ico" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                                @if($favicon_url)
+                                    <div class="mt-2">
+                                        <img src="{{ $favicon_url }}" alt="Favicon Preview" class="w-6 h-6" />
+                                    </div>
+                                @endif
                             </div>
                         @endif
                     </div>
 
-                    <div class="pt-4 border-t border-gray-200">
+                    <!-- Preview -->
+                    <div class="pt-6 border-t border-gray-200">
                         <h3 class="text-sm font-medium text-gray-700 mb-3">Preview</h3>
                         <div class="flex items-center gap-8 p-4 bg-gray-50 rounded-lg">
                             <div class="flex items-center gap-2">
-                                @if($logo_type === 'image' && $logo_image)
-                                    <img src="{{ $logo_image }}" alt="Logo Preview" class="h-10 w-auto" />
+                                @if($logo_type === 'image' && ($logo_image || $logoImageFile))
+                                    @if($logoImageFile)
+                                        <img src="{{ $logoImageFile->temporaryUrl() }}" alt="Logo Preview" class="h-10 w-auto" />
+                                    @elseif($logo_image)
+                                        <img src="{{ $logo_image }}" alt="Logo Preview" class="h-10 w-auto" />
+                                    @endif
                                 @else
-                                    <span class="text-2xl font-bold text-gray-800">{{ $company_name ?: 'Company Name' }}</span>
+                                    <span class="text-2xl font-bold text-gray-800">
+                                        {{ $logo_text ?: ($company_name ?: 'Company Name') }}
+                                    </span>
                                 @endif
                             </div>
                             <div class="flex items-center gap-2">
-                                @if($favicon)
-                                    <img src="{{ $favicon }}" alt="Favicon Preview" class="w-6 h-6" />
+                                @if($favicon || $faviconFile)
+                                    @if($faviconFile)
+                                        <img src="{{ $faviconFile->temporaryUrl() }}" alt="Favicon Preview" class="w-6 h-6" />
+                                    @elseif($favicon)
+                                        <img src="{{ $favicon }}" alt="Favicon Preview" class="w-6 h-6" />
+                                    @endif
                                 @else
                                     <div class="w-6 h-6 bg-blue-600 rounded"></div>
                                 @endif

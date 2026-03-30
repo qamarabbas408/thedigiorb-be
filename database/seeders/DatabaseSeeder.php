@@ -99,6 +99,7 @@ class DatabaseSeeder extends Seeder
             ['setting_key' => 'twitter_url', 'setting_value' => '#'],
             ['setting_key' => 'linkedin_url', 'setting_value' => '#'],
             ['setting_key' => 'instagram_url', 'setting_value' => '#'],
+            ['setting_key' => 'logo_text', 'setting_value' => ''],
         ];
 
         foreach ($settings as $setting) {
