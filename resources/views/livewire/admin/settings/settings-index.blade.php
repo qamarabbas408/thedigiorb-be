@@ -22,11 +22,11 @@
                         <label class="block text-sm font-medium text-gray-700 mb-3">Logo Type</label>
                         <div class="flex gap-4">
                             <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="radio" wire:model="logo_type" value="text" class="w-4 h-4 text-blue-600" />
+                                <input type="radio" wire:model.live="logo_type" value="text" class="w-4 h-4 text-blue-600" />
                                 <span class="text-sm text-gray-700">Text Logo</span>
                             </label>
                             <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="radio" wire:model="logo_type" value="image" class="w-4 h-4 text-blue-600" />
+                                <input type="radio" wire:model.live="logo_type" value="image" class="w-4 h-4 text-blue-600" />
                                 <span class="text-sm text-gray-700">Image Logo</span>
                             </label>
                         </div>
@@ -54,18 +54,25 @@
                         <div>
                             <h3 class="text-sm font-semibold text-gray-800 mb-4">Image Logo</h3>
                             
-                            <!-- Tab Selection -->
-                            <div class="flex gap-4 mb-4">
-                                <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" wire:model="logoTab" value="upload" class="w-4 h-4 text-blue-600" />
-                                    <span class="text-sm text-gray-700">Upload Image</span>
-                                </label>
-                                <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" wire:model="logoTab" value="url" class="w-4 h-4 text-blue-600" />
-                                    <span class="text-sm text-gray-700">Use URL</span>
-                                </label>
+                            <!-- Tab Navigation -->
+                            <div class="flex space-x-1 mb-3">
+                                <button 
+                                    type="button" 
+                                    wire:click="$set('logoTab', 'upload')"
+                                    class="flex-1 py-2 px-3 text-sm font-medium rounded-l-lg {{ $logoTab === 'upload' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}"
+                                >
+                                    Upload Image
+                                </button>
+                                <button 
+                                    type="button" 
+                                    wire:click="$set('logoTab', 'url')"
+                                    class="flex-1 py-2 px-3 text-sm font-medium rounded-r-lg {{ $logoTab === 'url' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}"
+                                >
+                                    Image URL
+                                </button>
                             </div>
                             
+                            <!-- Upload Tab -->
                             @if($logoTab === 'upload')
                                 <div class="flex items-start gap-4">
                                     <div class="w-48 h-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50 overflow-hidden">
@@ -90,12 +97,17 @@
                                         @enderror
                                     </div>
                                 </div>
-                            @else
+                            @endif
+                            
+                            <!-- URL Tab -->
+                            @if($logoTab === 'url')
                                 <div>
                                     <input type="url" wire:model="logo_image_url" placeholder="https://example.com/logo.png" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                                    <p class="text-xs text-gray-500 mt-1">Enter logo image URL</p>
                                     @if($logo_image_url)
-                                        <div class="mt-2">
-                                            <img src="{{ $logo_image_url }}" alt="Logo Preview" class="h-10 w-auto" />
+                                        <div class="mt-4">
+                                            <img src="{{ $logo_image_url }}" alt="Logo Preview" class="h-12 w-auto" onerror="this.src='https://via.placeholder.com/200x60?text=Invalid+URL'">
+                                            <p class="text-xs text-blue-600 mt-1">URL image preview</p>
                                         </div>
                                     @endif
                                 </div>

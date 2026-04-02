@@ -140,6 +140,13 @@ class SettingsIndex extends AdminComponent
             'logoImageFile' => 'image|max:10240',
         ]);
     }
+
+    public function updatedLogoType($value)
+    {
+        if ($value === 'image') {
+            $this->logoTab = 'upload';
+        }
+    }
     
     public function updatedFaviconFile()
     {
