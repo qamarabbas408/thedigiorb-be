@@ -23,6 +23,8 @@ return [
 
     'admin_password' => env('ADMIN_PASSWORD', 'admin123'),
 
+    'api_key' => env('APP_API_KEY'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

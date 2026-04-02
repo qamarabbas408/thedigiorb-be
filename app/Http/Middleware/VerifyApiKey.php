@@ -11,9 +11,9 @@ class VerifyApiKey
     public function handle(Request $request, Closure $next): Response
     {
         $apiKey = $request->header('x-api-key');
-        $validApiKey = env('APP_API_KEY');
+        $validApiKey = config('app.api_key');
 
-        if (!$apiKey || !$validApiKey || $apiKey !== $validApiKey) {
+        if (! $apiKey || ! $validApiKey || $apiKey !== $validApiKey) {
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthorized. Invalid or missing API key.',
