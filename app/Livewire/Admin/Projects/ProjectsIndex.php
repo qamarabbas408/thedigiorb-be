@@ -3,44 +3,64 @@
 namespace App\Livewire\Admin\Projects;
 
 use App\Livewire\Admin\AdminComponent;
+use App\Models\Category;
+use App\Models\Project;
+use App\Services\FileUploadService;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
-use App\Models\Project;
-use App\Models\Category;
-use Illuminate\Support\Str;
 use Livewire\WithFileUploads;
 
 #[Layout('layouts.admin')]
 class ProjectsIndex extends AdminComponent
 {
     use WithFileUploads;
-    
+
     public $projects = [];
+
     public $categories = [];
+
     public $loading = true;
-    
+
     public $mainImageFile = null;
+
     public $imageUrl = '';
+
     public $imageTab = 'upload'; // 'upload' or 'url'
+
     public $galleryFiles = [];
+
     public $gallery = [];
+
     public $uploadedGallery = [];
+
     public $showModal = false;
+
     public $editingProject = null;
-    
+
     public $title = '';
+
     public $subtitle = '';
+
     public $categoryId = '';
+
     public $year = '';
+
     public $technologies = '';
+
     public $description = '';
+
     public $image = '';
+
     public $client = '';
+
     public $url = '';
+
     public $featured = false;
+
     public $status = 'published';
-    
+
     public $deleteId = null;
+
     public $showDeleteModal = false;
 
     public function mount()
@@ -52,26 +72,26 @@ class ProjectsIndex extends AdminComponent
     {
         $this->projects = Project::orderBy('created_at', 'desc')->get()->toArray();
         $this->categories = Category::orderBy('name')->get()->toArray();
-        
+
         // Process projects to handle missing images
         foreach ($this->projects as &$project) {
             // Check if main image exists
-            if ($project['image'] && !$this->imageExists($project['image'])) {
+            if ($project['image'] && ! $this->imageExists($project['image'])) {
                 $project['image'] = null;
             }
-            
+
             // Check gallery images
             if (isset($project['gallery']) && is_array($project['gallery'])) {
-                $project['gallery'] = array_filter($project['gallery'], function($img) {
+                $project['gallery'] = array_filter($project['gallery'], function ($img) {
                     return $this->imageExists($img);
                 });
                 $project['gallery'] = array_values($project['gallery']);
             }
         }
-        
+
         $this->loading = false;
     }
-    
+
     /**
      * Check if an image exists (basic URL validation)
      */
@@ -81,18 +101,19 @@ class ProjectsIndex extends AdminComponent
         if (str_starts_with($url, 'http')) {
             return true;
         }
-        
+
         // Check for local asset paths that don't exist
         if (str_starts_with($url, '/assets/img/portfolio/')) {
             return false; // These old portfolio images don't exist
         }
-        
+
         // Check for storage URLs
         if (str_starts_with($url, '/storage/')) {
             $relativePath = str_replace('/storage/', '', $url);
+
             return \Storage::disk('public')->exists($relativePath);
         }
-        
+
         return true;
     }
 
@@ -102,7 +123,7 @@ class ProjectsIndex extends AdminComponent
         if ($this->showModal) {
             return;
         }
-        
+
         if ($project) {
             $this->editingProject = $project;
             $this->title = $project['title'];
@@ -121,7 +142,7 @@ class ProjectsIndex extends AdminComponent
             $this->status = $project['status'] ?? 'published';
         } else {
             $this->resetModal();
-            if (!empty($this->categories)) {
+            if (! empty($this->categories)) {
                 $this->categoryId = $this->categories[0]['id'] ?? '';
                 $this->year = date('Y');
             }
@@ -152,7 +173,7 @@ class ProjectsIndex extends AdminComponent
         $this->url = '';
         $this->featured = false;
         $this->status = 'published';
-        
+
         // Reset file uploads
         $this->mainImageFile = null;
         $this->galleryFiles = [];
@@ -188,20 +209,21 @@ class ProjectsIndex extends AdminComponent
         ]);
 
         // Validate that either main image file or image URL is provided
-        if (!$this->mainImageFile && !$this->imageUrl && !$this->image) {
+        if (! $this->mainImageFile && ! $this->imageUrl && ! $this->image) {
             $this->addError('imageRequired', 'A main image is required. Please either upload an image or provide an image URL.');
+
             return;
         }
 
         // Process main image
         if ($this->mainImageFile) {
             try {
-                $uploadService = app(\App\Services\FileUploadService::class);
+                $uploadService = app(FileUploadService::class);
                 $uploadedImage = $uploadService->uploadImage($this->mainImageFile, 'projects/main');
                 $this->image = $uploadedImage['url'];
                 $this->dispatch('toast', ['message' => 'Main image uploaded successfully!', 'type' => 'success']);
             } catch (\Exception $e) {
-                $this->addError('mainImageFile', 'Failed to upload main image: ' . $e->getMessage());
+                $this->addError('mainImageFile', 'Failed to upload main image: '.$e->getMessage());
                 $this->dispatch('toast', ['message' => 'Failed to upload main image', 'type' => 'error']);
             }
         } elseif ($this->imageUrl) {
@@ -210,17 +232,17 @@ class ProjectsIndex extends AdminComponent
         }
 
         // Process gallery images
-        if (!empty($this->galleryFiles)) {
-            $uploadService = app(\App\Services\FileUploadService::class);
+        if (! empty($this->galleryFiles)) {
+            $uploadService = app(FileUploadService::class);
             $galleryUploads = $uploadService->uploadGallery($this->galleryFiles, 'projects/gallery');
-            
+
             // Add new gallery images to existing ones
             $newGalleryUrls = array_column($galleryUploads, 'url');
             $this->gallery = array_merge($this->gallery, $newGalleryUrls);
         }
 
         // Add uploaded gallery images from component
-        if (!empty($this->uploadedGallery)) {
+        if (! empty($this->uploadedGallery)) {
             $newGalleryUrls = array_column($this->uploadedGallery, 'url');
             $this->gallery = array_merge($this->gallery, $newGalleryUrls);
         }
@@ -243,9 +265,12 @@ class ProjectsIndex extends AdminComponent
             'status' => $this->status,
         ];
 
+        // Ensure gallery is an array to prevent null errors
+        $this->gallery = is_array($this->gallery) ? $this->gallery : [];
+
         // Debug: Log what we're saving
-        \Log::info('Saving project with image: ' . ($this->image ?: 'NULL'));
-        \Log::info('Gallery count: ' . count($this->gallery));
+        \Log::info('Saving project with image: '.($this->image ?: 'NULL'));
+        \Log::info('Gallery count: '.count($this->gallery));
 
         if ($this->editingProject) {
             Project::where('id', $this->editingProject['id'])->update($data);
@@ -275,20 +300,20 @@ class ProjectsIndex extends AdminComponent
     {
         if ($this->deleteId) {
             $project = Project::find($this->deleteId);
-            
+
             // Delete associated files
             if ($project && $project->image) {
-                $uploadService = app(\App\Services\FileUploadService::class);
+                $uploadService = app(FileUploadService::class);
                 $imagePath = parse_url($project->image, PHP_URL_PATH);
                 if ($imagePath) {
                     $relativePath = str_replace('/storage/', '', $imagePath);
                     $uploadService->deleteFile($relativePath);
                 }
             }
-            
+
             // Delete gallery images
-            if ($project && !empty($project->gallery)) {
-                $uploadService = app(\App\Services\FileUploadService::class);
+            if ($project && ! empty($project->gallery)) {
+                $uploadService = app(FileUploadService::class);
                 foreach ($project->gallery as $galleryImage) {
                     $imagePath = parse_url($galleryImage, PHP_URL_PATH);
                     if ($imagePath) {
@@ -297,7 +322,7 @@ class ProjectsIndex extends AdminComponent
                     }
                 }
             }
-            
+
             Project::where('id', $this->deleteId)->delete();
             $this->dispatch('toast', ['message' => 'Project deleted successfully!', 'type' => 'success']);
         }
@@ -309,13 +334,13 @@ class ProjectsIndex extends AdminComponent
     {
         if (isset($this->gallery[$index])) {
             // Delete file from storage
-            $uploadService = app(\App\Services\FileUploadService::class);
+            $uploadService = app(FileUploadService::class);
             $imagePath = parse_url($this->gallery[$index], PHP_URL_PATH);
             if ($imagePath) {
                 $relativePath = str_replace('/storage/', '', $imagePath);
                 $uploadService->deleteFile($relativePath);
             }
-            
+
             // Remove from gallery array
             unset($this->gallery[$index]);
             $this->gallery = array_values($this->gallery);
@@ -324,50 +349,50 @@ class ProjectsIndex extends AdminComponent
 
     public function onFileUploaded($fileData)
     {
-        \Log::info('onFileUploaded received: ' . json_encode($fileData));
-        
+        \Log::info('onFileUploaded received: '.json_encode($fileData));
+
         // Ensure gallery is always an array
-        if (!is_array($this->gallery)) {
+        if (! is_array($this->gallery)) {
             $this->gallery = is_string($this->gallery) ? json_decode($this->gallery, true) : [];
         }
-        
+
         $this->gallery[] = $fileData['url'];
-        \Log::info('Gallery now has ' . count($this->gallery) . ' images');
+        \Log::info('Gallery now has '.count($this->gallery).' images');
     }
-    
+
     // Listen for file-uploaded events
     #[On('file-uploaded')]
     public function handleFileUploaded($fileData)
     {
-        \Log::info('handleFileUploaded received: ' . json_encode($fileData));
-        
+        \Log::info('handleFileUploaded received: '.json_encode($fileData));
+
         // Ensure gallery is always an array
-        if (!is_array($this->gallery)) {
+        if (! is_array($this->gallery)) {
             $this->gallery = is_string($this->gallery) ? json_decode($this->gallery, true) : [];
         }
-        
+
         $this->gallery[] = $fileData['url'];
-        \Log::info('Gallery now has ' . count($this->gallery) . ' images');
+        \Log::info('Gallery now has '.count($this->gallery).' images');
     }
 
     public function onFileRemoved($index)
     {
-        \Log::info('onFileRemoved received for index: ' . $index);
-        
+        \Log::info('onFileRemoved received for index: '.$index);
+
         // Ensure gallery is always an array
-        if (!is_array($this->gallery)) {
+        if (! is_array($this->gallery)) {
             $this->gallery = is_string($this->gallery) ? json_decode($this->gallery, true) : [];
         }
-        
+
         if (isset($this->gallery[$index])) {
             // Delete file from storage
-            $uploadService = app(\App\Services\FileUploadService::class);
+            $uploadService = app(FileUploadService::class);
             $imagePath = parse_url($this->gallery[$index], PHP_URL_PATH);
             if ($imagePath) {
                 $relativePath = str_replace('/storage/', '', $imagePath);
                 $uploadService->deleteFile($relativePath);
             }
-            
+
             // Remove from gallery array
             unset($this->gallery[$index]);
             $this->gallery = array_values($this->gallery);
