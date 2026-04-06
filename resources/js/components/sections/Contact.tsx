@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSettings } from '@/context/SettingsContext';
 import { useStatsBySection } from '@/hooks';
 import { useSubmitContact } from '@/hooks';
-import { showToast } from './CustomToaster';
+import { showToast } from '../CustomToaster';
 import { 
   Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram,
   Send, Lock, Loader2
