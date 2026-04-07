@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class Stat extends Model
 {
@@ -22,4 +23,12 @@ class Stat extends Model
     protected $casts = [
         'display_order' => 'integer',
     ];
+
+    public static function getStatsBySection(string $section): Collection
+    {
+        return static::where('section', $section)
+            ->where('status', 'published')
+            ->orderBy('display_order')
+            ->get();
+    }
 }
