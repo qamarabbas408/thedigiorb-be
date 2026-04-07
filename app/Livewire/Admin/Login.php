@@ -14,6 +14,13 @@ class Login extends Component
         'password' => 'required|string',
     ];
 
+    public function mount()
+    {
+        if (session()->get('admin_authenticated')) {
+            redirect('/admin');
+        }
+    }
+
     public function login()
     {
         $this->validate();
@@ -22,7 +29,8 @@ class Login extends Component
         
         if ($this->password === $adminPassword) {
             session()->put('admin_authenticated', true);
-            return redirect('/admin');
+            redirect('/admin');
+            return;
         }
         
         $this->error = 'Invalid password. Please try again.';
@@ -32,10 +40,6 @@ class Login extends Component
     #[Layout('layouts.admin-login')]
     public function render()
     {
-        if (session()->get('admin_authenticated')) {
-            return redirect('/admin');
-        }
-        
         return view('livewire.admin.login');
     }
 }
