@@ -20,6 +20,7 @@ class SettingsIndex extends AdminComponent
     public $company_name = '';
     public $company_email = '';
     public $company_phone = '';
+    public $show_phone = true;
     public $company_address = '';
     public $company_description = '';
     public $logo_type = 'text';
@@ -49,6 +50,7 @@ class SettingsIndex extends AdminComponent
         $this->company_name = $settings['company_name']->setting_value ?? '';
         $this->company_email = $settings['company_email']->setting_value ?? '';
         $this->company_phone = $settings['company_phone']->setting_value ?? '';
+        $this->show_phone = $settings['show_phone']->setting_value ?? true;
         $this->company_address = $settings['company_address']->setting_value ?? '';
         $this->company_description = $settings['company_description']->setting_value ?? '';
         $this->logo_type = $settings['logo_type']->setting_value ?? 'text';
@@ -107,6 +109,7 @@ class SettingsIndex extends AdminComponent
             'company_name' => $this->company_name,
             'company_email' => $this->company_email,
             'company_phone' => $this->company_phone,
+            'show_phone' => (int) $this->show_phone,
             'company_address' => $this->company_address,
             'company_description' => $this->company_description,
             'logo_type' => $this->logo_type,
