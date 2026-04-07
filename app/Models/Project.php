@@ -20,6 +20,8 @@ class Project extends Model
         'image',
         'gallery',
         'featured',
+        'display_order',
+        'is_active',
         'client',
         'url',
         'status',
@@ -29,6 +31,8 @@ class Project extends Model
         'technologies' => 'array',
         'gallery' => 'array',
         'featured' => 'boolean',
+        'display_order' => 'integer',
+        'is_active' => 'boolean',
     ];
 
     public function category()

@@ -57,6 +57,10 @@ class ProjectsIndex extends AdminComponent
 
     public $featured = false;
 
+    public $displayOrder = 0;
+
+    public $isActive = true;
+
     public $status = 'published';
 
     public $deleteId = null;
@@ -139,6 +143,8 @@ class ProjectsIndex extends AdminComponent
             $this->client = $project['client'] ?? '';
             $this->url = $project['url'] ?? '';
             $this->featured = $project['featured'] ?? false;
+            $this->displayOrder = $project['display_order'] ?? 0;
+            $this->isActive = $project['is_active'] ?? true;
             $this->status = $project['status'] ?? 'published';
         } else {
             $this->resetModal();
@@ -172,6 +178,8 @@ class ProjectsIndex extends AdminComponent
         $this->client = '';
         $this->url = '';
         $this->featured = false;
+        $this->displayOrder = 0;
+        $this->isActive = true;
         $this->status = 'published';
 
         // Reset file uploads
@@ -262,6 +270,8 @@ class ProjectsIndex extends AdminComponent
             'client' => $this->client,
             'url' => $this->url,
             'featured' => $this->featured,
+            'display_order' => $this->displayOrder,
+            'is_active' => $this->isActive,
             'status' => $this->status,
         ];
 

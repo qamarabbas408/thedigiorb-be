@@ -20,13 +20,35 @@ class ProjectController extends Controller
             $query->where('status', $request->status);
         }
 
-        $projects = $query->orderBy('created_at', 'DESC')->get();
+        // Filter by is_active (default true for frontend)
+        $query->where('is_active', $request->get('is_active', true));
+
+        // Sort by display_order first, then by created_at
+        $query->orderBy('display_order', 'ASC')->orderBy('created_at', 'DESC');
+
+        // Get total count before applying limit/offset
+        $total = $query->count();
+
+        // Apply limit and offset for pagination
+        if ($request->has('limit')) {
+            $query->limit((int) $request->limit);
+        }
+        
+        if ($request->has('offset')) {
+            $query->offset((int) $request->offset);
+        }
+
+        $projects = $query->get();
 
         $projects = $projects->map(function ($project) {
             return $this->formatProject($project);
         });
 
-        return $this->success($projects);
+        return response()->json([
+            'success' => true,
+            'data' => $projects,
+            'total' => $total,
+        ], 200, ['X-Total-Count' => $total]);
     }
 
     public function store(Request $request)
@@ -41,6 +63,8 @@ class ProjectController extends Controller
             'image' => 'nullable|string|max:500',
             'gallery' => 'nullable|array',
             'featured' => 'nullable|boolean',
+            'displayOrder' => 'nullable|integer|min:0',
+            'isActive' => 'nullable|boolean',
             'client' => 'nullable|string|max:200',
             'url' => 'nullable|string|max:500',
             'status' => 'nullable|string|max:20',
@@ -57,6 +81,8 @@ class ProjectController extends Controller
             'image' => $validated['image'] ?? '',
             'gallery' => json_encode($validated['gallery'] ?? []),
             'featured' => $validated['featured'] ?? false,
+            'display_order' => $validated['displayOrder'] ?? 0,
+            'is_active' => $validated['isActive'] ?? true,
             'client' => $validated['client'] ?? '',
             'url' => $validated['url'] ?? '#',
             'status' => $validated['status'] ?? 'published',
@@ -94,6 +120,8 @@ class ProjectController extends Controller
             'image' => 'nullable|string|max:500',
             'gallery' => 'nullable|array',
             'featured' => 'nullable|boolean',
+            'displayOrder' => 'nullable|integer|min:0',
+            'isActive' => 'nullable|boolean',
             'client' => 'nullable|string|max:200',
             'url' => 'nullable|string|max:500',
             'status' => 'nullable|string|max:20',
@@ -109,6 +137,8 @@ class ProjectController extends Controller
             'image' => $validated['image'] ?? '',
             'gallery' => json_encode($validated['gallery'] ?? []),
             'featured' => $validated['featured'] ?? false,
+            'display_order' => $validated['displayOrder'] ?? 0,
+            'is_active' => $validated['isActive'] ?? true,
             'client' => $validated['client'] ?? '',
             'url' => $validated['url'] ?? '#',
             'status' => $validated['status'] ?? 'published',
@@ -154,6 +184,8 @@ class ProjectController extends Controller
             'image' => $image,
             'gallery' => is_array($project->gallery) ? $project->gallery : json_decode($project->gallery, true) ?? [],
             'featured' => (bool) $project->featured,
+            'display_order' => (int) $project->display_order,
+            'is_active' => (bool) $project->is_active,
             'client' => $project->client,
             'url' => $project->url,
             'status' => $project->status,

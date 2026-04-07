@@ -36,6 +36,7 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Gallery</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Featured</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Active</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                         </tr>
@@ -91,6 +92,13 @@
                                             <i class="bi bi-star-fill"></i> Featured
                                         </span>
                                     @endif
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{
+                                        $project['is_active'] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                    }}">
+                                        {{ $project['is_active'] ? 'Active' : 'Inactive' }}
+                                    </span>
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{
@@ -373,6 +381,25 @@
                                 />
                                 <span class="text-sm text-gray-700">Featured Project</span>
                             </label>
+                            
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    wire:model="isActive"
+                                    class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                />
+                                <span class="text-sm text-gray-700">Show on Website</span>
+                            </label>
+                            
+                            <div class="flex-1">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Display Order</label>
+                                <input
+                                    type="number"
+                                    wire:model="displayOrder"
+                                    min="0"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                                />
+                            </div>
                             
                             <div class="flex-1">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
