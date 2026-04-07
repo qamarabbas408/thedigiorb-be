@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class Service extends Model
 {
@@ -23,4 +24,11 @@ class Service extends Model
         'featured' => 'boolean',
         'display_order' => 'integer',
     ];
+
+    public static function getPublished(): Collection
+    {
+        return static::where('status', 'published')
+            ->orderBy('display_order')
+            ->get();
+    }
 }

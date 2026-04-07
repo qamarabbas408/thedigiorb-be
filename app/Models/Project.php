@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class Project extends Model
 {
@@ -20,6 +21,7 @@ class Project extends Model
         'image',
         'gallery',
         'featured',
+        'display_order',
         'client',
         'url',
         'status',
@@ -29,10 +31,18 @@ class Project extends Model
         'technologies' => 'array',
         'gallery' => 'array',
         'featured' => 'boolean',
+        'display_order' => 'integer',
     ];
 
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
+    }
+
+    public static function getPublished(): Collection
+    {
+        return static::where('status', 'published')
+            ->orderBy('display_order')
+            ->get();
     }
 }

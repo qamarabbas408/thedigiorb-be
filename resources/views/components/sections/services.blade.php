@@ -1,5 +1,5 @@
 @php
-$services = \App\Models\Service::where('status', 'published')->orderBy('display_order')->get();
+$services = \App\Models\Service::getPublished();
 $stats = \App\Models\Stat::getStatsBySection('services');
 $featuredServices = $services->filter(fn($s) => $s->featured);
 $regularServices = $services->filter(fn($s) => !$s->featured);

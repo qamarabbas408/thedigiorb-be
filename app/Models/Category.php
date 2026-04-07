@@ -15,5 +15,10 @@ class Category extends Model
         'slug',
         'filter_class',
         'icon',
+        'display_order',
+    ];
+
+    protected $casts = [
+        'display_order' => 'integer',
     ];
 }

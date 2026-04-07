@@ -1,5 +1,5 @@
 @php
-$projects = \App\Models\Project::where('status', 'published')->orderBy('display_order')->get();
+$projects = \App\Models\Project::getPublished();
 $categories = \App\Models\Category::orderBy('display_order')->get();
 @endphp
 

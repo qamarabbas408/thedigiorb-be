@@ -1,5 +1,5 @@
 @php
-$members = \App\Models\TeamMember::where('status', 'published')->orderBy('display_order')->get();
+$members = \App\Models\TeamMember::where('status', 'active')->orderBy('display_order')->get();
 $stats = \App\Models\Stat::getStatsBySection('team');
 @endphp
 
