@@ -216,8 +216,9 @@ class ProjectsIndex extends AdminComponent
             'galleryFiles.*' => 'nullable|image|max:10240',
         ]);
 
-        // Validate that either main image file or image URL is provided
-        if (! $this->mainImageFile && ! $this->imageUrl && ! $this->image) {
+        // Validate that either main image file or image URL is provided only for new projects
+        // For editing, existing image is acceptable
+        if (! $this->editingProject && ! $this->mainImageFile && ! $this->imageUrl && ! $this->image) {
             $this->addError('imageRequired', 'A main image is required. Please either upload an image or provide an image URL.');
 
             return;
