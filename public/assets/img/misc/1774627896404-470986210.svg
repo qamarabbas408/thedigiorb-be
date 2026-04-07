@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 46.27001953125 14.02587890625">
+  <defs>
+    <style>
+      .cls-1, .cls-2, .cls-3 {
+        fill: #231f20;
+        font-family: MoglanDemo, MoglanDemo;
+        font-size: 8.813514709473px;
+      }
+
+      .cls-4 {
+        fill: #2e3192;
+        font-family: MyriadPro-Regular, 'Myriad Pro';
+        font-size: 12.902925491333px;
+        letter-spacing: -.000074705957em;
+      }
+
+      .cls-2 {
+        letter-spacing: .000109369012em;
+      }
+
+      .cls-3 {
+        letter-spacing: -.009952580112em;
+      }
+    </style>
+  </defs>
+  <text transform="translate(-.000117182732 10.799824237823) scale(1.013110041618 1)"><tspan><tspan class="cls-1" x="0" y="0">DigitalOri</tspan><tspan class="cls-3" x="34.345625853157" y="0">b</tspan><tspan class="cls-2" x="38.778718758174" y="0">it</tspan><tspan class="cls-4" x="43.000712001048" y="0">.</tspan></tspan></text>
+</svg>
