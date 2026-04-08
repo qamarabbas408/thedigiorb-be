@@ -9,13 +9,17 @@ use App\Services\FileUploadService;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 
 #[Layout('layouts.admin')]
 class ProjectsIndex extends AdminComponent
 {
     use WithFileUploads;
+    use WithPagination;
 
-    public $projects = [];
+    protected $paginationTheme = 'bootstrap';
+
+    public $perPage = 12;
 
     public $categories = [];
 
@@ -25,7 +29,7 @@ class ProjectsIndex extends AdminComponent
 
     public $imageUrl = '';
 
-    public $imageTab = 'upload'; // 'upload' or 'url'
+    public $imageTab = 'upload';
 
     public $galleryFiles = [];
 
@@ -74,26 +78,14 @@ class ProjectsIndex extends AdminComponent
 
     public function loadData()
     {
-        $this->projects = Project::orderBy('created_at', 'desc')->get()->toArray();
+        // Categories are loaded in render() via pagination
         $this->categories = Category::orderBy('name')->get()->toArray();
-
-        // Process projects to handle missing images
-        foreach ($this->projects as &$project) {
-            // Check if main image exists
-            if ($project['image'] && ! $this->imageExists($project['image'])) {
-                $project['image'] = null;
-            }
-
-            // Check gallery images
-            if (isset($project['gallery']) && is_array($project['gallery'])) {
-                $project['gallery'] = array_filter($project['gallery'], function ($img) {
-                    return $this->imageExists($img);
-                });
-                $project['gallery'] = array_values($project['gallery']);
-            }
-        }
-
         $this->loading = false;
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
     }
 
     /**
@@ -412,6 +404,27 @@ class ProjectsIndex extends AdminComponent
 
     public function render()
     {
-        return view('livewire.admin.projects.projects-index');
+        $projects = Project::orderBy('created_at', 'desc')->paginate($this->perPage);
+        
+        // Process projects to handle missing images
+        $projects->getCollection()->transform(function ($project) {
+            // Check if main image exists
+            if ($project['image'] && ! $this->imageExists($project['image'])) {
+                $project['image'] = null;
+            }
+
+            // Check gallery images
+            if (isset($project['gallery']) && is_array($project['gallery'])) {
+                $project['gallery'] = array_filter($project['gallery'], function ($img) {
+                    return $this->imageExists($img);
+                });
+                $project['gallery'] = array_values($project['gallery']);
+            }
+            return $project;
+        });
+
+        return view('livewire.admin.projects.projects-index', [
+            'projects' => $projects
+        ]);
     }
 }

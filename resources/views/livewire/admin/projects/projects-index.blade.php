@@ -5,17 +5,28 @@
     </div>
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <h2 class="text-lg font-semibold text-gray-800">All Projects ({{ count($projects) }})</h2>
-            <button 
-                wire:click="openModal()"
-                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
-                <i class="bi bi-plus"></i>
-                Add Project
-            </button>
+        <div class="px-6 py-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <h2 class="text-lg font-semibold text-gray-800">All Projects ({{ $projects->total() }})</h2>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <label class="text-sm text-gray-600">Show:</label>
+                    <select wire:model="perPage" wire:change="resetPage" class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                        <option value="12">12</option>
+                        <option value="24">24</option>
+                        <option value="48">48</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                <button 
+                    wire:click="openModal()"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                    <i class="bi bi-plus"></i>
+                    Add Project
+                </button>
+            </div>
         </div>
         
-        @if(count($projects) === 0)
+        @if($projects->count() === 0)
             <div class="p-12 text-center">
                 <i class="bi bi-briefcase text-5xl text-gray-300 mb-4"></i>
                 <h3 class="text-lg font-medium text-gray-700 mb-2">No projects yet</h3>
@@ -31,6 +42,7 @@
                 <table class="w-full">
                     <thead>
                         <tr class="bg-gray-50">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">#</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Image</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
@@ -42,8 +54,11 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                        @foreach($projects as $project)
+                        @foreach($projects as $index => $project)
                             <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 text-sm text-gray-500">
+                                    {{ $projects->firstItem() + $index }}
+                                </td>
                                 <td class="px-6 py-4">
                                     <img
                                         src="{{ $project['image'] ?: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&h=200&fit=crop' }}"
@@ -126,6 +141,36 @@
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Pagination -->
+            @if($projects->hasPages())
+                <div class="px-6 py-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div class="text-sm text-gray-600">
+                        Showing {{ $projects->firstItem() }} to {{ $projects->lastItem() }} of {{ $projects->total() }} results
+                    </div>
+                    <nav class="flex items-center gap-1">
+                        @if($projects->onFirstPage())
+                            <span class="px-3 py-1 rounded border border-gray-300 text-gray-400 cursor-not-allowed">‹ Prev</span>
+                        @else
+                            <a href="?page={{ $projects->currentPage() - 1 }}" class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50" wire:navigate>‹ Prev</a>
+                        @endif
+                        
+                        @foreach(range(1, $projects->lastPage()) as $page)
+                            @if($page == $projects->currentPage())
+                                <span class="px-3 py-1 rounded bg-blue-600 text-white">{{ $page }}</span>
+                            @else
+                                <a href="?page={{ $page }}" class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50" wire:navigate>{{ $page }}</a>
+                            @endif
+                        @endforeach
+                        
+                        @if($projects->hasMorePages())
+                            <a href="?page={{ $projects->currentPage() + 1 }}" class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50" wire:navigate>Next ›</a>
+                        @else
+                            <span class="px-3 py-1 rounded border border-gray-300 text-gray-400 cursor-not-allowed">Next ›</span>
+                        @endif
+                    </nav>
+                </div>
+            @endif
         @endif
     </div>
 
