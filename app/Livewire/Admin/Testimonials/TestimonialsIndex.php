@@ -5,11 +5,19 @@ namespace App\Livewire\Admin\Testimonials;
 use App\Livewire\Admin\AdminComponent;
 use Livewire\Attributes\Layout;
 use App\Models\Testimonial;
+use Livewire\WithPagination;
 
 #[Layout('layouts.admin')]
 class TestimonialsIndex extends AdminComponent
 {
-    public $testimonials = [];
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
+
+    public $perPage = 12;
+
+    public $allTestimonials = [];
+
     public $loading = true;
     public $showModal = false;
     public $editingId = null;
@@ -31,7 +39,7 @@ class TestimonialsIndex extends AdminComponent
 
     public function loadData()
     {
-        $this->testimonials = Testimonial::orderBy('created_at', 'desc')->get()->toArray();
+        $this->allTestimonials = Testimonial::orderBy('created_at', 'desc')->get()->toArray();
         $this->loading = false;
     }
 
@@ -116,6 +124,9 @@ class TestimonialsIndex extends AdminComponent
 
     public function render()
     {
-        return view('livewire.admin.testimonials.testimonials-index');
+        $testimonials = Testimonial::orderBy('created_at', 'desc')->paginate($this->perPage);
+        return view('livewire.admin.testimonials.testimonials-index', [
+            'testimonials' => $testimonials
+        ]);
     }
 }

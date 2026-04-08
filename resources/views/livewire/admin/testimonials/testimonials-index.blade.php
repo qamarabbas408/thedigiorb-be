@@ -1,19 +1,30 @@
 <div class="p-8" x-data="{ showModal: @entangle('showModal'), showDeleteModal: @entangle('showDeleteModal') }">
-    <div class="flex justify-between items-center mb-8">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
             <h1 class="text-3xl font-bold text-gray-900">Testimonials</h1>
             <p class="text-gray-600 mt-1">Manage client testimonials</p>
         </div>
-        <button wire:click="openModal()" class="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 flex items-center gap-2">
-            <i class="bi bi-plus-lg"></i> Add Testimonial
-        </button>
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+                <label class="text-sm text-gray-600">Show:</label>
+                <select wire:model="perPage" wire:change="resetPage" class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                    <option value="12">12</option>
+                    <option value="24">24</option>
+                    <option value="48">48</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+            <button wire:click="openModal()" class="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 flex items-center gap-2">
+                <i class="bi bi-plus-lg"></i> Add Testimonial
+            </button>
+        </div>
     </div>
 
     @if($loading)
         <div class="flex justify-center py-12">
             <div class="w-10 h-10 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
         </div>
-    @elseif(count($testimonials) === 0)
+    @elseif($testimonials->count() === 0)
         <div class="bg-white rounded-xl shadow-sm p-12 text-center">
             <i class="bi bi-chat-quote text-6xl text-gray-300 mb-4"></i>
             <h3 class="text-xl font-semibold text-gray-700 mb-2">No testimonials yet</h3>
@@ -25,6 +36,7 @@
             <table class="w-full">
                 <thead class="bg-gray-50 border-b">
                     <tr>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">#</th>
                         <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">Client</th>
                         <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">Company</th>
                         <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">Content</th>
@@ -34,8 +46,11 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y">
-                    @foreach($testimonials as $testimonial)
+                    @foreach($testimonials as $index => $testimonial)
                         <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                {{ $testimonials->firstItem() + $index }}
+                            </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-semibold">
@@ -81,6 +96,36 @@
                 </tbody>
             </table>
         </div>
+        
+        <!-- Pagination -->
+        @if($testimonials->hasPages())
+            <div class="px-6 py-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="text-sm text-gray-600">
+                    Showing {{ $testimonials->firstItem() }} to {{ $testimonials->lastItem() }} of {{ $testimonials->total() }} results
+                </div>
+                <nav class="flex items-center gap-1">
+                    @if($testimonials->onFirstPage())
+                        <span class="px-3 py-1 rounded border border-gray-300 text-gray-400 cursor-not-allowed">‹ Prev</span>
+                    @else
+                        <a href="?page={{ $testimonials->currentPage() - 1 }}" class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50" wire:navigate>‹ Prev</a>
+                    @endif
+                    
+                    @foreach(range(1, $testimonials->lastPage()) as $page)
+                        @if($page == $testimonials->currentPage())
+                            <span class="px-3 py-1 rounded bg-blue-600 text-white">{{ $page }}</span>
+                        @else
+                            <a href="?page={{ $page }}" class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50" wire:navigate>{{ $page }}</a>
+                        @endif
+                    @endforeach
+                    
+                    @if($testimonials->hasMorePages())
+                        <a href="?page={{ $testimonials->currentPage() + 1 }}" class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50" wire:navigate>Next ›</a>
+                    @else
+                        <span class="px-3 py-1 rounded border border-gray-300 text-gray-400 cursor-not-allowed">Next ›</span>
+                    @endif
+                </nav>
+            </div>
+        @endif
     @endif
 
     <!-- Modal -->
