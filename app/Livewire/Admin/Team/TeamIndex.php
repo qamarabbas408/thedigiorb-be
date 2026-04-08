@@ -6,13 +6,20 @@ use App\Livewire\Admin\AdminComponent;
 use Livewire\Attributes\Layout;
 use App\Models\TeamMember;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 
 #[Layout('layouts.admin')]
 class TeamIndex extends AdminComponent
 {
     use WithFileUploads;
-    
-    public $members = [];
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
+
+    public $perPage = 12;
+
+    public $allMembers = [];
+
     public $loading = true;
     public $showModal = false;
     public $editingMember = null;
@@ -39,7 +46,7 @@ class TeamIndex extends AdminComponent
 
     public function loadData()
     {
-        $this->members = TeamMember::orderBy('display_order')->get()->toArray();
+        $this->allMembers = TeamMember::orderBy('display_order')->get()->toArray();
         $this->loading = false;
     }
 
@@ -66,7 +73,7 @@ class TeamIndex extends AdminComponent
             $this->status = $member['status'] ?? 'active';
         } else {
             $this->resetModal();
-            $this->displayOrder = count($this->members) + 1;
+            $this->displayOrder = count($this->allMembers) + 1;
         }
         $this->showModal = true;
     }
@@ -176,6 +183,9 @@ class TeamIndex extends AdminComponent
 
     public function render()
     {
-        return view('livewire.admin.team.team-index');
+        $members = TeamMember::orderBy('display_order', 'asc')->paginate($this->perPage);
+        return view('livewire.admin.team.team-index', [
+            'members' => $members
+        ]);
     }
 }

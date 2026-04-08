@@ -5,14 +5,25 @@
     </div>
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <h2 class="text-lg font-semibold text-gray-800">All Team Members ({{ count($members) }})</h2>
-            <button wire:click="openModal()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
-                <i class="bi bi-plus"></i> Add Team Member
-            </button>
+        <div class="px-6 py-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <h2 class="text-lg font-semibold text-gray-800">All Team Members ({{ $members->total() }})</h2>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <label class="text-sm text-gray-600">Show:</label>
+                    <select wire:model="perPage" wire:change="resetPage" class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                        <option value="12">12</option>
+                        <option value="24">24</option>
+                        <option value="48">48</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                <button wire:click="openModal()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                    <i class="bi bi-plus"></i> Add Team Member
+                </button>
+            </div>
         </div>
         
-        @if(count($members) === 0)
+        @if($members->count() === 0)
             <div class="p-12 text-center">
                 <i class="bi bi-people text-5xl text-gray-300 mb-4"></i>
                 <h3 class="text-lg font-medium text-gray-700 mb-2">No team members yet</h3>
@@ -20,8 +31,11 @@
             </div>
         @else
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-                @foreach($members as $member)
-                    <div class="bg-gray-50 rounded-xl overflow-hidden hover:shadow-md transition-shadow">
+                @foreach($members as $index => $member)
+                    <div class="bg-gray-50 rounded-xl overflow-hidden hover:shadow-md transition-shadow relative">
+                        <div class="absolute top-2 left-2 z-10 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+                            #{{ $members->firstItem() + $index }}
+                        </div>
                         <div class="aspect-square bg-gray-200 relative">
                             <img src="{{ $member['image'] ?: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop' }}" alt="{{ $member['name'] }}" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop'" />
                             <div class="absolute top-2 right-2 flex gap-2">
@@ -43,6 +57,36 @@
                     </div>
                 @endforeach
             </div>
+            
+            <!-- Pagination -->
+            @if($members->hasPages())
+                <div class="px-6 py-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div class="text-sm text-gray-600">
+                        Showing {{ $members->firstItem() }} to {{ $members->lastItem() }} of {{ $members->total() }} results
+                    </div>
+                    <nav class="flex items-center gap-1">
+                        @if($members->onFirstPage())
+                            <span class="px-3 py-1 rounded border border-gray-300 text-gray-400 cursor-not-allowed">‹ Prev</span>
+                        @else
+                            <a href="?page={{ $members->currentPage() - 1 }}" class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50" wire:navigate>‹ Prev</a>
+                        @endif
+                        
+                        @foreach(range(1, $members->lastPage()) as $page)
+                            @if($page == $members->currentPage())
+                                <span class="px-3 py-1 rounded bg-blue-600 text-white">{{ $page }}</span>
+                            @else
+                                <a href="?page={{ $page }}" class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50" wire:navigate>{{ $page }}</a>
+                            @endif
+                        @endforeach
+                        
+                        @if($members->hasMorePages())
+                            <a href="?page={{ $members->currentPage() + 1 }}" class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50" wire:navigate>Next ›</a>
+                        @else
+                            <span class="px-3 py-1 rounded border border-gray-300 text-gray-400 cursor-not-allowed">Next ›</span>
+                        @endif
+                    </nav>
+                </div>
+            @endif
         @endif
     </div>
 
