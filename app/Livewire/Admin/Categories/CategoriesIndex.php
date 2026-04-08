@@ -5,12 +5,20 @@ namespace App\Livewire\Admin\Categories;
 use App\Livewire\Admin\AdminComponent;
 use Livewire\Attributes\Layout;
 use App\Models\Category;
+use Livewire\WithPagination;
 use Illuminate\Support\Str;
 
 #[Layout('layouts.admin')]
 class CategoriesIndex extends AdminComponent
 {
-    public $categories = [];
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
+
+    public $perPage = 12;
+
+    public $allCategories = [];
+
     public $loading = true;
     
     public $showModal = false;
@@ -36,7 +44,7 @@ class CategoriesIndex extends AdminComponent
 
     public function loadData()
     {
-        $this->categories = Category::orderBy('name')->get()->toArray();
+        $this->allCategories = Category::orderBy('name')->get()->toArray();
         $this->loading = false;
     }
 
@@ -112,6 +120,9 @@ class CategoriesIndex extends AdminComponent
 
     public function render()
     {
-        return view('livewire.admin.categories.categories-index');
+        $categories = Category::orderBy('name')->paginate($this->perPage);
+        return view('livewire.admin.categories.categories-index', [
+            'categories' => $categories
+        ]);
     }
 }
