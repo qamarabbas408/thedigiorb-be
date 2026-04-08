@@ -202,20 +202,12 @@ class ProjectsIndex extends AdminComponent
         $this->validate([
             'title' => 'required|string|max:255',
             'categoryId' => 'required|string',
-            'technologies' => 'string',
-            'description' => 'string',
+            'technologies' => 'required|string',
+            'description' => 'required|string',
             'imageUrl' => 'nullable|url',
             'mainImageFile' => 'nullable|image|max:10240',
             'galleryFiles.*' => 'nullable|image|max:10240',
         ]);
-
-        // Validate that either main image file or image URL is provided only for new projects
-        // For editing, existing image is acceptable
-        if (! $this->editingProject && ! $this->mainImageFile && ! $this->imageUrl && ! $this->image) {
-            $this->addError('imageRequired', 'A main image is required. Please either upload an image or provide an image URL.');
-
-            return;
-        }
 
         // Process main image
         if ($this->mainImageFile) {

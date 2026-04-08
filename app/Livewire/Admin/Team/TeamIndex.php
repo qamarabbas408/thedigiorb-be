@@ -86,6 +86,11 @@ class TeamIndex extends AdminComponent
         $this->resetForm();
     }
 
+    public function resetModal()
+    {
+        $this->resetForm();
+    }
+
     public function resetForm()
     {
         $this->name = '';
@@ -112,12 +117,6 @@ class TeamIndex extends AdminComponent
             'imageUrl' => 'nullable|url',
             'mainImageFile' => 'nullable|image|max:10240',
         ]);
-
-        // Validate that either main image file or image URL is provided
-        if (!$this->mainImageFile && !$this->imageUrl && !$this->image) {
-            $this->addError('imageRequired', 'A profile image is required. Please either upload an image or provide an image URL.');
-            return;
-        }
 
         // Process main image
         if ($this->mainImageFile) {

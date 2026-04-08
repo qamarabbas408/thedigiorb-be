@@ -106,8 +106,8 @@
                                 <input type="text" wire:model="name" required placeholder="John Doe" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                                <input type="text" wire:model="role" placeholder="CEO" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Role *</label>
+                                <input type="text" wire:model="role" required placeholder="CEO" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Display Order</label>
