@@ -16,6 +16,12 @@
         a { text-decoration: none !important; }
         a:hover { text-decoration: none !important; }
         
+        body { overflow-x: hidden !important; }
+        
+        /* Hide all horizontal scrollbars in sidebar */
+        aside::-webkit-scrollbar { display: none !important; }
+        aside { scrollbar-width: none !important; -ms-overflow-style: none !important; }
+        
         .scrollbar-dark::-webkit-scrollbar { width: 6px; }
         .scrollbar-dark::-webkit-scrollbar-track { background: transparent; }
         .scrollbar-dark::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
@@ -40,7 +46,7 @@
     </button>
 
     <!-- Sidebar -->
-    <aside class="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-800 text-white flex flex-col fixed h-screen z-40 transition-all duration-300 shadow-2xl" :class="sidebarOpen ? 'w-72' : 'w-20'">
+    <aside class="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-800 text-white flex flex-col fixed h-screen z-40 transition-all duration-300 shadow-2xl overflow-x-hidden" :class="sidebarOpen ? 'w-72' : 'w-20'">
         <!-- Header -->
         <div class="px-6 py-6 border-b border-slate-700/50 flex items-center gap-3" :class="sidebarOpen ? 'justify-start' : 'justify-center'">
             <div class="relative group">
@@ -56,7 +62,7 @@
         </div>
         
         <!-- Navigation -->
-        <nav class="flex-1 overflow-y-auto py-4 scrollbar-dark px-3">
+        <nav class="flex-1 overflow-y-auto py-4 scrollbar-dark px-2 lg:px-3">
             <div class="space-y-1">
                 @php
                 $currentPath = '/' . request()->segment(2);
@@ -77,8 +83,8 @@
                 @foreach($navItems as $item)
                     @php $itemLabel = addslashes($item['label']); @endphp
                     <a href="{{ $item['href'] }}" 
-                       class="group relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ $currentPath === $item['href'] ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-slate-800/50' }}"
-                       :class="sidebarOpen ? '' : 'justify-center px-3'"
+                       class="group relative flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 {{ $currentPath === $item['href'] ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-slate-800/50' }}"
+                       :class="sidebarOpen ? '' : 'justify-center px-2'"
                        x-data="{}"
                        @mouseenter="$el.title = sidebarOpen ? '' : '{{ $itemLabel }}'"
                        @mouseleave="$el.title = ''">
@@ -99,8 +105,8 @@
 
             <div class="my-4 border-t border-slate-700/50"></div>
 
-            <a href="/" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all duration-200 border border-transparent hover:border-emerald-500/30"
-               :class="sidebarOpen ? '' : 'justify-center px-3'"
+            <a href="/" target="_blank" class="flex items-center gap-3 px-2 lg:px-4 py-3 rounded-xl text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all duration-200 border border-transparent hover:border-emerald-500/30"
+               :class="sidebarOpen ? '' : 'justify-center px-2'"
                title="View Live Site">
                 <i class="bi bi-box-arrow-up-right w-5 h-5 flex-shrink-0"></i>
                 <span class="font-medium" x-show="sidebarOpen" x-cloak>View Live Site</span>
@@ -108,11 +114,11 @@
         </nav>
         
         <!-- Logout Button -->
-        <div class="px-3 py-4 border-t border-slate-700/50 bg-slate-900/50" :class="sidebarOpen ? '' : 'flex justify-center'">
+        <div class="px-2 lg:px-3 py-4 border-t border-slate-700/50 bg-slate-900/50" :class="sidebarOpen ? '' : 'flex justify-center'">
             <form method="POST" action="{{ route('admin.logout') }}">
                 @csrf
-                <button type="submit" class="group flex items-center gap-3 px-4 py-3 text-slate-400 border border-slate-700 rounded-xl hover:text-red-400 hover:border-red-500/50 hover:bg-red-500/10 transition-all duration-200"
-                        :class="sidebarOpen ? 'w-full justify-start' : 'justify-center px-3'"
+                <button type="submit" class="group flex items-center gap-3 px-2 lg:px-4 py-3 text-slate-400 border border-slate-700 rounded-xl hover:text-red-400 hover:border-red-500/50 hover:bg-red-500/10 transition-all duration-200"
+                        :class="sidebarOpen ? 'w-full justify-start' : 'justify-center px-2'"
                         title="Logout">
                     <i class="bi bi-box-arrow-right w-5 h-5 group-hover:rotate-12 transition-transform duration-200"></i>
                     <span class="font-medium" x-show="sidebarOpen" x-cloak>Logout</span>
@@ -122,7 +128,7 @@
     </aside>
     
     <!-- Main Content -->
-    <main class="flex-1 overflow-y-auto scrollbar-light transition-all duration-300" :class="sidebarOpen ? 'ml-72' : 'ml-20'">
+    <main class="flex-1 overflow-y-auto scrollbar-light transition-all duration-300 overflow-x-hidden" :class="sidebarOpen ? 'ml-72' : 'ml-20'">
         <div class="min-h-full">
             {{ $slot }}
         </div>

@@ -5,14 +5,25 @@
     </div>
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <h2 class="text-lg font-semibold text-gray-800">All Services ({{ count($services) }})</h2>
-            <button wire:click="openModal()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
-                <i class="bi bi-plus"></i> Add Service
-            </button>
+        <div class="px-6 py-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <h2 class="text-lg font-semibold text-gray-800">All Services ({{ $services->total() }})</h2>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <label class="text-sm text-gray-600">Show:</label>
+                    <select wire:model="perPage" wire:change="resetPage" class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                        <option value="12">12</option>
+                        <option value="24">24</option>
+                        <option value="48">48</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                <button wire:click="openModal()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                    <i class="bi bi-plus"></i> Add Service
+                </button>
+            </div>
         </div>
         
-        @if(count($services) === 0)
+        @if($services->count() === 0)
             <div class="p-12 text-center">
                 <i class="bi bi-gear text-5xl text-gray-300 mb-4"></i>
                 <h3 class="text-lg font-medium text-gray-700 mb-2">No services yet</h3>
@@ -23,6 +34,7 @@
                 <table class="w-full">
                     <thead>
                         <tr class="bg-gray-50">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">#</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Icon</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
@@ -33,8 +45,11 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                        @foreach($services as $service)
+                        @foreach($services as $index => $service)
                             <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 text-sm text-gray-500">
+                                    {{ $services->firstItem() + $index }}
+                                </td>
                                 <td class="px-6 py-4">
                                     <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                                         <i class="bi {{ $service['icon'] }} text-blue-600 text-lg"></i>
@@ -66,6 +81,36 @@
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Pagination -->
+            @if($services->hasPages())
+                <div class="px-6 py-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div class="text-sm text-gray-600">
+                        Showing {{ $services->firstItem() }} to {{ $services->lastItem() }} of {{ $services->total() }} results
+                    </div>
+                    <nav class="flex items-center gap-1">
+                        @if($services->onFirstPage())
+                            <span class="px-3 py-1 rounded border border-gray-300 text-gray-400 cursor-not-allowed">‹ Prev</span>
+                        @else
+                            <a href="?page={{ $services->currentPage() - 1 }}" class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50" wire:navigate>‹ Prev</a>
+                        @endif
+                        
+                        @foreach(range(1, $services->lastPage()) as $page)
+                            @if($page == $services->currentPage())
+                                <span class="px-3 py-1 rounded bg-blue-600 text-white">{{ $page }}</span>
+                            @else
+                                <a href="?page={{ $page }}" class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50" wire:navigate>{{ $page }}</a>
+                            @endif
+                        @endforeach
+                        
+                        @if($services->hasMorePages())
+                            <a href="?page={{ $services->currentPage() + 1 }}" class="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50" wire:navigate>Next ›</a>
+                        @else
+                            <span class="px-3 py-1 rounded border border-gray-300 text-gray-400 cursor-not-allowed">Next ›</span>
+                        @endif
+                    </nav>
+                </div>
+            @endif
         @endif
     </div>
 

@@ -4,22 +4,40 @@ namespace App\Livewire\Admin\Services;
 
 use App\Livewire\Admin\AdminComponent;
 use Livewire\Attributes\Layout;
+use Livewire\WithPagination;
 use App\Models\Service;
 
 #[Layout('layouts.admin')]
 class ServicesIndex extends AdminComponent
 {
-    public $services = [];
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
+
+    public $perPage = 12;
+
+    public $allServices = [];
+
     public $loading = true;
+
     public $showModal = false;
+
     public $editingService = null;
+
     public $title = '';
+
     public $description = '';
+
     public $icon = 'bi-lightbulb';
+
     public $featured = false;
+
     public $displayOrder = 0;
+
     public $status = 'published';
+
     public $showDeleteModal = false;
+
     public $deleteId = null;
 
     public $iconOptions = [
@@ -41,7 +59,7 @@ class ServicesIndex extends AdminComponent
 
     public function loadData()
     {
-        $this->services = Service::orderBy('display_order')->get()->toArray();
+        $this->allServices = Service::orderBy('display_order')->get()->toArray();
         $this->loading = false;
     }
 
@@ -57,7 +75,7 @@ class ServicesIndex extends AdminComponent
             $this->status = $service['status'] ?? 'published';
         } else {
             $this->resetForm();
-            $this->displayOrder = count($this->services) + 1;
+            $this->displayOrder = count($this->allServices) + 1;
         }
         $this->showModal = true;
     }
@@ -126,6 +144,9 @@ class ServicesIndex extends AdminComponent
 
     public function render()
     {
-        return view('livewire.admin.services.services-index');
+        $services = Service::orderBy('display_order', 'asc')->paginate($this->perPage);
+        return view('livewire.admin.services.services-index', [
+            'services' => $services
+        ]);
     }
 }
