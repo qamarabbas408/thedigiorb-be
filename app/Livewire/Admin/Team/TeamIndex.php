@@ -7,6 +7,7 @@ use Livewire\Attributes\Layout;
 use App\Models\TeamMember;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use Illuminate\Support\Str;
 
 #[Layout('layouts.admin')]
 class TeamIndex extends AdminComponent
@@ -151,6 +152,7 @@ class TeamIndex extends AdminComponent
             TeamMember::where('id', $this->editingMember['id'])->update($data);
             $this->dispatch('toast', ['message' => 'Team member updated successfully!', 'type' => 'success']);
         } else {
+            $data['id'] = (string) Str::uuid();
             TeamMember::create($data);
             $this->dispatch('toast', ['message' => 'Team member created successfully!', 'type' => 'success']);
         }

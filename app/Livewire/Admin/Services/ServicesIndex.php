@@ -6,6 +6,7 @@ use App\Livewire\Admin\AdminComponent;
 use Livewire\Attributes\Layout;
 use Livewire\WithPagination;
 use App\Models\Service;
+use Illuminate\Support\Str;
 
 #[Layout('layouts.admin')]
 class ServicesIndex extends AdminComponent
@@ -112,6 +113,7 @@ class ServicesIndex extends AdminComponent
             Service::where('id', $this->editingService['id'])->update($data);
             $this->dispatch('toast', ['message' => 'Service updated successfully!', 'type' => 'success']);
         } else {
+            $data['id'] = (string) Str::uuid();
             Service::create($data);
             $this->dispatch('toast', ['message' => 'Service created successfully!', 'type' => 'success']);
         }

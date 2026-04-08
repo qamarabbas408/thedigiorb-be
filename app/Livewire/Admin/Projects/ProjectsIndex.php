@@ -6,6 +6,7 @@ use App\Livewire\Admin\AdminComponent;
 use App\Models\Category;
 use App\Models\Project;
 use App\Services\FileUploadService;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\WithFileUploads;
@@ -279,6 +280,7 @@ class ProjectsIndex extends AdminComponent
             Project::where('id', $this->editingProject['id'])->update($data);
             $this->dispatch('toast', ['message' => 'Project updated successfully!', 'type' => 'success']);
         } else {
+            $data['id'] = (string) Str::uuid();
             Project::create($data);
             $this->dispatch('toast', ['message' => 'Project created successfully!', 'type' => 'success']);
         }

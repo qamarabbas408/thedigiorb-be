@@ -88,6 +88,7 @@ class CategoriesIndex extends AdminComponent
             Category::where('id', $this->editingCategory['id'])->update($data);
             $this->dispatch('toast', ['message' => 'Category updated successfully!', 'type' => 'success']);
         } else {
+            $data['id'] = Str::slug($this->name);
             Category::create($data);
             $this->dispatch('toast', ['message' => 'Category created successfully!', 'type' => 'success']);
         }

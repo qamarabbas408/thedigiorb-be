@@ -6,6 +6,7 @@ use App\Livewire\Admin\AdminComponent;
 use Livewire\Attributes\Layout;
 use App\Models\Testimonial;
 use Livewire\WithPagination;
+use Illuminate\Support\Str;
 
 #[Layout('layouts.admin')]
 class TestimonialsIndex extends AdminComponent
@@ -97,6 +98,7 @@ class TestimonialsIndex extends AdminComponent
             Testimonial::where('id', $this->editingId)->update($data);
             $this->dispatch('toast', ['message' => 'Testimonial updated successfully!', 'type' => 'success']);
         } else {
+            $data['id'] = (string) Str::uuid();
             Testimonial::create($data);
             $this->dispatch('toast', ['message' => 'Testimonial created successfully!', 'type' => 'success']);
         }
